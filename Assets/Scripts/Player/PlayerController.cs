@@ -2,6 +2,8 @@ using UnityEngine;
 
 /// <summary>
 /// Controlador de Diego con escala base ajustable (para que se vea mas grande).
+/// Chunk 1: ahora respeta estado del GameManager (no lee input en Pausa/GameOver/Victory)
+/// y acepta W tambien como tecla de salto (ademas de Espacio).
 /// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
@@ -46,15 +48,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!PuedeActuar) { movimientoX = 0; AplicarScaleVisual(); return; }
+        // Bloquea input si el juego no esta en Playing (pausa, GameOver, Victoria)
+        bool juegoActivo = GameManager.Instance == null || GameManager.Instance.IsPlaying;
+
+        if (!PuedeActuar || !juegoActivo)
+        {
+            movimientoX = 0;
+            AplicarScaleVisual();
+            if (anim != null) anim.SetFloat("velocidadAbsoluta", 0f);
+            return;
+        }
 
         movimientoX = Input.GetAxisRaw("Horizontal");
 
         bool quiereAgacharse = Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow);
         SetAgachado(quiereAgacharse);
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded && !IsCrouching)
+        // Salto con Espacio o W
+        bool quiereSaltar = Input.GetKeyDown(KeyCode.Space)
+                         || Input.GetKeyDown(KeyCode.W)
+                         || Input.GetKeyDown(KeyCode.UpArrow);
+        if (quiereSaltar && IsGrounded && !IsCrouching)
+        {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, fuerzaSalto);
+            if (AudioManager.Instance != null) AudioManager.Instance.PlaySalto();
+        }
 
         if (movimientoX > 0.01f) IsFacingRight = true;
         else if (movimientoX < -0.01f) IsFacingRight = false;
