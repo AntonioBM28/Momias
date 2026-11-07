@@ -4838,15 +4838,15 @@ MonoBehaviour:
   musicVolume: 0.6
   sfxVolume: 1
   musicMenu: {fileID: 0}
-  musicNivel1: {fileID: 0}
+  musicNivel1: {fileID: 8300000, guid: e2047beefff64290bde093a08efe5f26, type: 3}
   musicVictoria: {fileID: 0}
   musicGameOver: {fileID: 0}
-  sfxCampanazo: {fileID: 0}
-  sfxImpactoMomia: {fileID: 0}
+  sfxCampanazo: {fileID: 8300000, guid: dcfe8a43a7294640af80b8976ca2868f, type: 3}
+  sfxImpactoMomia: {fileID: 8300000, guid: 125e1f168868431eb1071200624e7208, type: 3}
   sfxMuerteMomia: {fileID: 0}
   sfxSalto: {fileID: 0}
   sfxPickupCorazon: {fileID: 0}
-  sfxCampanaSagrada: {fileID: 0}
+  sfxCampanaSagrada: {fileID: 8300000, guid: 0283a634b8e749a287db2877f5f209f6, type: 3}
   sfxUIClick: {fileID: 0}
   musicFadeDuration: 1
 --- !u!4 &1686312115
@@ -5367,6 +5367,24 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1697926152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697926141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65a48f48912d4dd6b4c9f660924d6c82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HeartsHUD
+  corazonLleno: {fileID: 731457928364512001, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
+  corazonMedio: {fileID: 731457928364512002, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
+  corazonVacio: {fileID: 731457928364512003, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
+  margen: {x: 24, y: 24}
+  tamanoCorazon: 40
+  separacion: 4
 --- !u!1 &1744158368
 GameObject:
   m_ObjectHideFlags: 0
@@ -5917,24 +5935,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2114176703}
   m_CullTransparentMesh: 1
---- !u!114 &1697926152
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1697926141}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65a48f48912d4dd6b4c9f660924d6c82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HeartsHUD
-  corazonLleno: {fileID: 731457928364512001, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
-  corazonMedio: {fileID: 731457928364512002, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
-  corazonVacio: {fileID: 731457928364512003, guid: 9dcb3f4b2a5d4dddb9806a850a3f64bd, type: 3}
-  margen: {x: 24, y: 24}
-  tamanoCorazon: 40
-  separacion: 4
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
         string sceneName = SceneManager.GetActiveScene().name;
         if (sceneName == menuSceneName) SetState(GameState.Menu);
         else SetState(GameState.Playing);
+        ReproducirMusicaDelNivel(sceneName);
     }
 
     void OnEnable()
@@ -77,6 +78,14 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1f;
         if (scene.name == menuSceneName) SetState(GameState.Menu);
         else SetState(GameState.Playing);
+        ReproducirMusicaDelNivel(scene.name);
+    }
+
+    private void ReproducirMusicaDelNivel(string sceneName)
+    {
+        if (sceneName != firstLevelSceneName || AudioManager.Instance == null) return;
+        AudioClip musica = AudioManager.Instance.musicNivel1;
+        if (musica != null) AudioManager.Instance.PlayMusic(musica, false);
     }
 
     // --- Metodos publicos para disparar transiciones ---

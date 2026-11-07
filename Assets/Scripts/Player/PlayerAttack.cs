@@ -60,7 +60,10 @@ public class PlayerAttack : MonoBehaviour
     private void Atacar()
     {
         if (anim != null) anim.SetTrigger("Attack");
-        if (audioSource != null && sfxCampanazo != null) audioSource.PlayOneShot(sfxCampanazo);
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.PlayCampanazo();
+        else if (audioSource != null && sfxCampanazo != null)
+            audioSource.PlayOneShot(sfxCampanazo);
 
         if (hitboxPrefab == null || puntoAtaque == null)
         {
