@@ -18,10 +18,30 @@ public class MomiaCaminante : EnemyBase
 
     private bool estaAtacando;
     private float tiempoProximoAtaque;
+    private float danioAcumulado;
+    private bool tieneParametroCaminando;
+
+    protected override void Start()
+    {
+        base.Start();
+        if (anim == null) return;
+        foreach (AnimatorControllerParameter parametro in anim.parameters)
+        {
+            if (parametro.name == "Caminando" && parametro.type == AnimatorControllerParameterType.Bool)
+            {
+                tieneParametroCaminando = true;
+                break;
+            }
+        }
+    }
 
     protected override void Mover()
     {
-        if (estaAtacando) return;
+        if (estaAtacando)
+        {
+            if (tieneParametroCaminando) anim.SetBool("Caminando", false);
+            return;
+        }
 
         float dx = playerTransform.position.x - transform.position.x;
         float distanciaX = Mathf.Abs(dx);
@@ -33,12 +53,14 @@ public class MomiaCaminante : EnemyBase
         if (distanciaX > distanciaAtaque)
         {
             // Caminar hacia Diego
+            if (tieneParametroCaminando) anim.SetBool("Caminando", true);
             float dirX = Mathf.Sign(dx);
             rb.linearVelocity = new Vector2(dirX * data.velocidad, rb.linearVelocity.y);
         }
         else
         {
             // En rango horizontal: detenerse y preparar ataque
+            if (tieneParametroCaminando) anim.SetBool("Caminando", false);
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             if (Time.time >= tiempoProximoAtaque)
                 StartCoroutine(RutinaAtaque());
@@ -61,8 +83,16 @@ public class MomiaCaminante : EnemyBase
             if (distancia2D <= distanciaDanio)
             {
                 PlayerHealth ph = playerTransform.GetComponent<PlayerHealth>();
-                if (ph != null && data != null)
-                    ph.RecibirDanio(data.danio, transform.position);
+                if (ph != null && data != null && !ph.EsInvulnerable)
+                {
+                    danioAcumulado += data.danio;
+                    int danioAplicable = Mathf.FloorToInt(danioAcumulado);
+                    if (danioAplicable > 0)
+                    {
+                        danioAcumulado -= danioAplicable;
+                        ph.RecibirDanio(danioAplicable, transform.position);
+                    }
+                }
             }
         }
 

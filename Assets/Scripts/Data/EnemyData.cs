@@ -20,8 +20,8 @@ public class EnemyData : ScriptableObject
     [Tooltip("Velocidad horizontal en unidades/seg.")]
     public float velocidad = 1.5f;
 
-    [Tooltip("Daño al jugador en medios corazones. 1=medio corazon, 2=corazon completo.")]
-    public int danio = 1;
+    [Tooltip("Daño al jugador en medios corazones; admite fracciones para variantes débiles.")]
+    public float danio = 1f;
 
     [Header("Aspecto (palette swap)")]
     [Tooltip("Color del sprite. Gris=caminante, Rojo=corredora, Verde=escupidora.")]

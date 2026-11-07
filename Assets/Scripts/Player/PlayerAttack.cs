@@ -2,8 +2,7 @@ using UnityEngine;
 
 /// <summary>
 /// Ataque direccional de Diego: campanazo en la direccion a la que mira.
-/// Añade un pulso visual (escala rapida) como feedback mientras no haya
-/// animacion de ataque formal en el Animator.
+/// Reproduce la animacion de ataque del Animator y aplica feedback visual.
 /// </summary>
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAttack : MonoBehaviour
