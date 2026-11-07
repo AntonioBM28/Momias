@@ -70,6 +70,7 @@ public abstract class EnemyBase : MonoBehaviour
     {
         if (estaMuerto) return;
         vidaActual -= cantidad;
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayImpactoMomia();
 
         Vector2 dir = ((Vector2)transform.position - origen).normalized;
         rb.linearVelocity = new Vector2(dir.x * 3f, 2f);
