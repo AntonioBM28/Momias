@@ -24,6 +24,10 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private List<Oleada> oleadas = new List<Oleada>();
     [SerializeField] private bool arrancarAutomatico = true;
 
+    [Header("Campana Sagrada")]
+    [SerializeField] private Sprite spriteCampanaSagrada;
+    [SerializeField] private Vector3 posicionCampanaSagrada = new Vector3(0f, -1.3f, 0f);
+
     [Header("Eventos")]
     public UnityEvent<int, int> OnWaveChanged;
     public UnityEvent<int, int> OnEnemiesRemaining;
@@ -81,8 +85,29 @@ public class WaveManager : MonoBehaviour
         }
 
         corriendo = false;
+        SpawnCampanaSagrada();
         OnAllWavesCompleted?.Invoke();
         Debug.Log("[WaveManager] Todas las oleadas completadas. ¡Victoria!");
+    }
+
+    private void SpawnCampanaSagrada()
+    {
+        if (spriteCampanaSagrada == null)
+        {
+            Debug.LogError("[WaveManager] Asigna el sprite de la Campana Sagrada en el Inspector.");
+            return;
+        }
+
+        GameObject campana = new GameObject("Campana Sagrada Nivel 1");
+        campana.transform.position = posicionCampanaSagrada;
+
+        SpriteRenderer renderer = campana.AddComponent<SpriteRenderer>();
+        renderer.sprite = spriteCampanaSagrada;
+        renderer.sortingOrder = 15;
+
+        campana.AddComponent<CircleCollider2D>();
+        campana.AddComponent<SacredBell>();
+        Debug.Log("[WaveManager] Campana Sagrada apareció en el centro. Acércate y pulsa E.");
     }
 
     private void SpawnEnemigo(Oleada o, int indice)

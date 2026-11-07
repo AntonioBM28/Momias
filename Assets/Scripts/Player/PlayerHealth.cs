@@ -31,11 +31,13 @@ public class PlayerHealth : MonoBehaviour
     public bool EsInvulnerable { get; private set; }
 
     private PlayerController controller;
+    private Animator animator;
     private Rigidbody2D rb;
 
     void Awake()
     {
         controller = GetComponent<PlayerController>();
+        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
         vidaActual = vidaMaxima;
@@ -61,6 +63,8 @@ public class PlayerHealth : MonoBehaviour
             Morir();
             return;
         }
+
+        if (animator != null) animator.SetTrigger("Damage");
 
         Vector2 dir = ((Vector2)transform.position - origenDanio).normalized;
         if (dir.sqrMagnitude < 0.01f) dir = Vector2.up;
@@ -94,6 +98,7 @@ public class PlayerHealth : MonoBehaviour
     private void Morir()
     {
         EstaMuerto = true;
+        if (animator != null) animator.SetBool("IsDead", true);
         if (controller != null) controller.PuedeActuar = false;
         rb.linearVelocity = Vector2.zero;
         Debug.Log("[Diego] Murió.");
