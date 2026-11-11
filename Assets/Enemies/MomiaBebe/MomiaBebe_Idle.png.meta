@@ -139,362 +139,176 @@ TextureImporter:
       name: MomiaBebe_Idle_0
       rect:
         serializedVersion: 2
-        x: 18
-        y: 11
-        width: 27
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 0
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: a099c436316e4a338e58508c650a0541
+      spriteID: bda31ca4529548adae0b8d3458c6e470
       internalID: 3204069708961886653
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_1
       rect:
         serializedVersion: 2
-        x: 85
-        y: 11
-        width: 28
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 68
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 556730c8e79c4bc9ad44b64d8afff4f4
+      spriteID: ab7a2ef92a534ebe84bee103a6372c8e
       internalID: 8661851223320225689
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_2
       rect:
         serializedVersion: 2
-        x: 152
-        y: 11
-        width: 29
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 136
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ded75b0dca0e48f4bebe41a6248470df
+      spriteID: 80f65cfdedb242b3967a1aa07b3c175a
       internalID: 6418962414573032536
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_3
       rect:
         serializedVersion: 2
-        x: 221
-        y: 11
-        width: 29
-        height: 46
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 204
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 41c3be04a0c349928ca8392c9a2b5cac
+      spriteID: 2df53b6f51714b70baa8c06056c33fbc
       internalID: 8734433990814852028
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_4
       rect:
         serializedVersion: 2
-        x: 289
-        y: 11
-        width: 30
-        height: 46
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 272
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 95e6905f1c0a4b02a04279a52362e774
+      spriteID: f8416f8c595e4554838be1eff07a1d46
       internalID: 7344655924969609288
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_5
       rect:
         serializedVersion: 2
-        x: 357
-        y: 11
-        width: 30
-        height: 46
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 340
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 82f477e80ba3469c99e2f3d9cf827b5a
+      spriteID: 6a9eb138b6554b319e72b8f02c69b31c
       internalID: 6234375660249877072
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_6
       rect:
         serializedVersion: 2
-        x: 425
-        y: 11
-        width: 29
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 408
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8e64e6f4d29f4d4fa061c590efd2d8d5
+      spriteID: d99174def0ea499ea5f96f2805892997
       internalID: 1636789495454008822
       vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     - serializedVersion: 2
       name: MomiaBebe_Idle_7
       rect:
         serializedVersion: 2
-        x: 493
-        y: 11
-        width: 29
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 476
+        y: 0
+        width: 68
+        height: 68
+      alignment: 9
+      pivot: {x: 0.5, y: 0.161765}
       border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
+      customData:
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 691fa78433814547ad692b2db17e43d9
+      spriteID: 15994ae1f1d94f29b67be84e2078d874
       internalID: 7068493952136967579
       vertices: []
-      indices: 
-      edges: []
-      weights: []
-    outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 4bb0d7dfd01d332d0800000000000000
-      internalID: -3300064243914830924
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_1
-      rect:
-        serializedVersion: 2
-        x: 89
-        y: 10
-        width: 26
-        height: 49
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: b8b80d9f0aaea13b0800000000000000
-      internalID: -5540858414419113077
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_2
-      rect:
-        serializedVersion: 2
-        x: 158
-        y: 10
-        width: 28
-        height: 48
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d344e9a6ad172a950800000000000000
-      internalID: 6458849998508278845
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_3
-      rect:
-        serializedVersion: 2
-        x: 228
-        y: 10
-        width: 26
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 10020dce6539bf890800000000000000
-      internalID: -7423177559240597503
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_4
-      rect:
-        serializedVersion: 2
-        x: 296
-        y: 10
-        width: 22
-        height: 48
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5dd78d772aaeb0420800000000000000
-      internalID: 2597427593625501141
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_5
-      rect:
-        serializedVersion: 2
-        x: 365
-        y: 11
-        width: 20
-        height: 48
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 29f539009ba31c3e0800000000000000
-      internalID: -2035280990341734510
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_6
-      rect:
-        serializedVersion: 2
-        x: 431
-        y: 11
-        width: 22
-        height: 48
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 52103839b1e5a5770800000000000000
-      internalID: 8600289910949347621
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_7
-      rect:
-        serializedVersion: 2
-        x: 498
-        y: 11
-        width: 27
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 46088014cf8b03550800000000000000
-      internalID: 6138609685668331620
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: MomiaWalking_8
-      rect:
-        serializedVersion: 2
-        x: 566
-        y: 10
-        width: 27
-        height: 47
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: a4d27ac7f43c18f40800000000000000
-      internalID: 5729074947153145162
-      vertices: []
-      indices: 
+      indices:
       edges: []
       weights: []
     outline: []
