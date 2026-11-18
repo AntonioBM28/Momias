@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d275eedf1b18040a94f302e83e9a92, type: 3}
   m_Name: MomiaBebe
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  nombre: Momia Bebé
-  vidaMaxima: 2
-  velocidad: 2.1
-  danio: 0.5
+  nombre: Momia Bebe
+  vidaMaxima: 1
+  velocidad: 2
+  danio: 1
   tinte: {r: 1, g: 1, b: 1, a: 1}
-  escala: 0.85
+  escala: 0.8
   chispasEco: 1

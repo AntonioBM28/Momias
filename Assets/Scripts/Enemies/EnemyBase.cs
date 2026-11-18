@@ -14,6 +14,10 @@ public abstract class EnemyBase : MonoBehaviour
     [Header("Estado (solo lectura)")]
     [SerializeField] protected int vidaActual;
 
+    [Header("Drops")]
+    [SerializeField] protected GameObject heartPickupPrefab;
+    [Range(0f, 1f)] [SerializeField] protected float heartDropChance = 0.20f;
+
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
     protected Animator anim;
@@ -90,11 +94,52 @@ public abstract class EnemyBase : MonoBehaviour
     protected virtual void Morir()
     {
         estaMuerto = true;
-        rb.linearVelocity = Vector2.zero;
-        Collider2D col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        HeartPickup.TrySpawnOnEnemyDeath(heartPickupPrefab, transform.position, heartDropChance);
+
+        // Game feel: subclases pueden overridear FeedbackMuerte para ajustar la intensidad
+        FeedbackMuerte();
 
         if (anim != null) anim.SetTrigger("Morir");
-        Destroy(gameObject, 1f);
+        // Frenar el movimiento horizontal pero dejar que la gravedad la lleve al piso.
+        // Mantenemos el collider activo: por la matriz, Enemy<->Enemy y Player<->Enemy
+        // ya estan apagados, asi que el cadaver solo colisiona con el suelo.
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        StartCoroutine(RutinaMorir());
+    }
+
+    /// <summary>
+    /// Feedback visual al morir (shake, hitpause, polvo). Default para enemigos
+    /// medianos. Las subclases chicas pueden bajar la intensidad y los bosses subirla.
+    /// </summary>
+    protected virtual void FeedbackMuerte()
+    {
+        if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.08f, 0.08f);
+        if (HitPause.Instance != null) HitPause.Instance.Freeze(0.06f);
+        DustBurst.Spawn(transform.position, new Color(0.6f, 0.5f, 0.4f, 1f));
+    }
+
+    private System.Collections.IEnumerator RutinaMorir()
+    {
+        // 1) Dejar que caiga/reproduzca anim de muerte si existe
+        yield return new WaitForSeconds(0.4f);
+
+        // 2) Ya en el suelo: congelar fisica para no seguir reaccionando
+        rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
+        // 3) Blink de alpha intermitente antes de desaparecer (clasico de arcade)
+        Color colorOriginal = sr.color;
+        float blinkTotal = 0.7f;
+        float intervalo = 0.08f;
+        int ciclos = Mathf.CeilToInt(blinkTotal / (intervalo * 2f));
+        for (int i = 0; i < ciclos; i++)
+        {
+            Color c = sr.color; c.a = 0.2f; sr.color = c;
+            yield return new WaitForSeconds(intervalo);
+            c = sr.color; c.a = 1f; sr.color = c;
+            yield return new WaitForSeconds(intervalo);
+        }
+
+        Destroy(gameObject);
     }
 }

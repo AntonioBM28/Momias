@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6663749101596244024}
   - component: {fileID: 3172584356979296116}
   - component: {fileID: 2899995713348269436}
-  - component: {fileID: 3658242233627518226}
+  - component: {fileID: 8586407527848511480}
   m_Layer: 9
   m_Name: MomiaBebe
   m_TagString: Enemy
@@ -179,11 +179,11 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.1}
+  m_Offset: {x: 0, y: 0.9}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.45833334, y: 1}
+    oldSize: {x: 1.4166666, y: 1.4166666}
     newSize: {x: 0.45833334, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -191,7 +191,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5, y: 0.8}
   m_EdgeRadius: 0
---- !u!114 &3658242233627518226
+--- !u!114 &8586407527848511480
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -200,15 +200,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 7313754212107019590}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e6901c2f872808b4997a37ab61a0478d, type: 3}
+  m_Script: {fileID: 11500000, guid: 5e79d0f6ccd8e604ca22818c1aca1585, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::MomiaCaminante
-  data: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::MomiaBebe
+  data: {fileID: 11400000, guid: ed46f25e878f4f1eb410f68ea3182f64, type: 2}
   colorFlash: {r: 1, g: 1, b: 1, a: 1}
   duracionFlash: 0.1
   vidaActual: 0
+  heartPickupPrefab: {fileID: 6222275962859468466, guid: 192fca4bed5608b47abd0b1daecda0ca, type: 3}
+  heartDropChance: 0.2
   distanciaAtaque: 1
   distanciaDanio: 1.3
-  duracionAtaque: 0.5
-  momentoDeImpacto: 0.22
-  cooldownAtaque: 0.35
+  duracionAtaque: 0.7
+  momentoDeImpacto: 0.4
+  cooldownAtaque: 0.6

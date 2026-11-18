@@ -86,8 +86,15 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        bool wasGrounded = IsGrounded;
         if (checkSuelo != null)
             IsGrounded = Physics2D.OverlapCircle(checkSuelo.position, radioSuelo, capaSuelo);
+
+        // Detectar aterrizaje y spawnear polvo en los pies
+        if (!wasGrounded && IsGrounded && checkSuelo != null)
+        {
+            DustBurst.Spawn(checkSuelo.position, new Color(0.84f, 0.75f, 0.59f, 1f));
+        }
 
         float vel = IsCrouching ? velocidadAgachado : velocidad;
         rb.linearVelocity = new Vector2(movimientoX * vel, rb.linearVelocity.y);

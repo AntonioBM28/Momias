@@ -16,6 +16,6 @@ MonoBehaviour:
   vidaMaxima: 2
   velocidad: 1.5
   danio: 1
-  tinte: {r: 1, g: 1, b: 1, a: 1}
+  tinte: {r: 0.62, g: 0.62, b: 0.62, a: 1}
   escala: 1.3
   chispasEco: 1

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d275eedf1b18040a94f302e83e9a92, type: 3}
   m_Name: MomiaPipila
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
-  nombre: Momia Pípila
-  vidaMaxima: 20
+  nombre: Momia Pipila
+  vidaMaxima: 15
   velocidad: 1.2
-  danio: 1
+  danio: 3
   tinte: {r: 1, g: 1, b: 1, a: 1}
   escala: 1
   chispasEco: 10

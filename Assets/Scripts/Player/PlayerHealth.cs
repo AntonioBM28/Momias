@@ -56,6 +56,10 @@ public class PlayerHealth : MonoBehaviour
         OnHealthChanged?.Invoke(vidaActual, vidaMaxima);
         OnDamaged?.Invoke();
 
+        // Game feel: shake + hitpause al recibir dano
+        if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.12f, 0.15f);
+        if (HitPause.Instance != null) HitPause.Instance.Freeze(0.03f);
+
         Debug.Log($"[Diego] Recibió daño. Vida: {vidaActual}/{vidaMaxima}");
 
         if (vidaActual <= 0)

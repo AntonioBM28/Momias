@@ -31,6 +31,11 @@ public class PlayerAttack : MonoBehaviour
     [Header("Visual / audio")]
     [SerializeField] private AudioClip sfxCampanazo;
 
+    [Header("Shockwave VFX")]
+    [SerializeField] private Sprite[] shockwaveFrames;
+    [SerializeField] private Color colorShockwave = new Color(1f, 0.878f, 0.4f, 1f);
+    [SerializeField] private float shockwaveOffsetX = 0.3f;
+
     private PlayerController controller;
     private Animator anim;
     private AudioSource audioSource;
@@ -81,6 +86,12 @@ public class PlayerAttack : MonoBehaviour
         GameObject hb = Instantiate(hitboxPrefab, pos, Quaternion.identity);
         AttackHitbox hitbox = hb.GetComponent<AttackHitbox>();
         if (hitbox != null) hitbox.Configurar(danio, tam, duracionHitbox);
+
+        if (shockwaveFrames != null && shockwaveFrames.Length > 0)
+        {
+            Vector3 shockPos = pos + new Vector3(shockwaveOffsetX * dirX, 0f, 0f);
+            ShockwaveVFX.Spawn(shockwaveFrames, shockPos, colorShockwave);
+        }
 
         if (!pulsando) StartCoroutine(PulsoVisual());
     }
