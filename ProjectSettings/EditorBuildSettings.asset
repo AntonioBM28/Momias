@@ -17,6 +17,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Nivel3_Callejones.unity
     guid: 8758a15f51ba481cae73859289abb23b
+  - enabled: 1
+    path: Assets/Scenes/Nivel4_Parroquia.unity
+    guid: cfabddd25849b5946a29aaec126f91fb
   m_configObjects:
     com.unity.dt.app-ui: {fileID: 11400000, guid: 1b1c20d82303e4b5781c3ef50ac1449f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
