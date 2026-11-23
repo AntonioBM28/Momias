@@ -73,11 +73,11 @@ public static class FaseD_Corredora
                 ti.mipmapEnabled = false;
                 ti.alphaIsTransparency = true;
 
-                // Pivot Bottom-center via TextureImporterSettings (para que no flote)
+                // Pivot Custom en Y=0.15 (donde estan los pies reales en sprites PixelLab 48x48)
                 TextureImporterSettings s = new TextureImporterSettings();
                 ti.ReadTextureSettings(s);
-                s.spriteAlignment = (int)SpriteAlignment.BottomCenter;
-                s.spritePivot = new Vector2(0.5f, 0f);
+                s.spriteAlignment = (int)SpriteAlignment.Custom;
+                s.spritePivot = new Vector2(0.5f, 0.15f);
                 ti.SetTextureSettings(s);
 
                 ti.SaveAndReimport();
@@ -203,7 +203,7 @@ public static class FaseD_Corredora
         so.FindProperty("vidaMaxima").intValue = 2;
         so.FindProperty("velocidad").floatValue = 3.5f;
         so.FindProperty("danio").floatValue = 2f;
-        so.FindProperty("escala").floatValue = 1.0f;
+        so.FindProperty("escala").floatValue = 1.3f;
         so.FindProperty("tinte").colorValue = Color.white;
         so.ApplyModifiedProperties();
         EditorUtility.SetDirty(data);

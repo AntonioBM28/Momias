@@ -129,6 +129,7 @@ public static class FaseB_Setup
 
         // ---- Managers ----
         CreateManagers();
+        AsignarClipsAlAudioManager();
 
         // ---- EventSystem ----
         EnsureEventSystem();
@@ -563,6 +564,53 @@ public static class FaseB_Setup
         rt.sizeDelta = Vector2.zero;
         rt.offsetMin = Vector2.zero;
         rt.offsetMax = Vector2.zero;
+    }
+
+    private static void AsignarClipsAlAudioManager()
+    {
+        GameObject amGo = GameObject.Find("AudioManager");
+        if (amGo == null) return;
+        AudioManager am = amGo.GetComponent<AudioManager>();
+        if (am == null) return;
+
+        SerializedObject so = new SerializedObject(am);
+        // GUIDs del .md de Antonio
+        string[,] mapping = {
+            { "musicMenu",        "7635ef1d13bb43a6bd0ecba82062436d" },
+            { "musicNivel2",      "d941dc6f3ac24af29be178c576b8ea18" },
+            { "musicNivel3",      "1176420ada9a4eeca3c8e9951523f615" },
+            { "musicBossPipila",  "b9804f39506347beb6459f6937c7ade4" },
+            { "musicGameOver",    "217bd4c264b544bd962ed111185c8747" },
+            { "musicVictoria",    "bfa52ab38825496984bf0bd166ffb19d" },
+            { "sfxMuerteMomia",   "5cae12120dea4c21829566ca209de12b" },
+        };
+        for (int i = 0; i < mapping.GetLength(0); i++)
+        {
+            string prop = mapping[i, 0], guid = mapping[i, 1];
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            if (string.IsNullOrEmpty(path)) continue;
+            AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+            var p = so.FindProperty(prop);
+            if (p != null) p.objectReferenceValue = clip;
+        }
+
+        AsignarPorNombre(so, "musicNivel1",       "Musica_Ambiental");
+        AsignarPorNombre(so, "sfxCampanazo",      "Campanazo_Diego");
+        AsignarPorNombre(so, "sfxImpactoMomia",   "Impacto_Momia");
+        AsignarPorNombre(so, "sfxCampanaSagrada", "Recoger_Campana");
+
+        so.ApplyModifiedProperties();
+        EditorUtility.SetDirty(am);
+        Debug.Log("[FaseB] ✅ AudioManager de Menu cableado con 11 clips");
+    }
+
+    private static void AsignarPorNombre(SerializedObject so, string prop, string nombreAsset)
+    {
+        string[] guids = AssetDatabase.FindAssets($"{nombreAsset} t:AudioClip");
+        if (guids.Length == 0) return;
+        AudioClip c = AssetDatabase.LoadAssetAtPath<AudioClip>(AssetDatabase.GUIDToAssetPath(guids[0]));
+        var p = so.FindProperty(prop);
+        if (p != null) p.objectReferenceValue = c;
     }
 
     private static void SetAnchor(RectTransform rt, float x, float y)

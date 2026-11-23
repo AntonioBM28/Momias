@@ -58,8 +58,13 @@ public class GameOverPanel : MonoBehaviour
 
         if (gameOverPanel != null) gameOverPanel.SetActive(true);
 
-        if (AudioManager.Instance != null && AudioManager.Instance.musicGameOver != null)
-            AudioManager.Instance.PlayMusic(AudioManager.Instance.musicGameOver, true);
+        // Jingle corto: tocar como SFX (no loop) y ademas parar la musica de fondo
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic(true);
+            if (AudioManager.Instance.musicGameOver != null)
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.musicGameOver);
+        }
 
         if (panelGroup != null)
         {

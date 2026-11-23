@@ -25,10 +25,11 @@ public class VictoryPanel : MonoBehaviour
 
     void Start()
     {
-        // El boton siguiente nivel deshabilitado hasta Avance 3
-        if (siguienteNivelButton != null)
+        // El boton "Siguiente Nivel" esta habilitado si hay nivel siguiente para la escena actual
+        if (siguienteNivelButton != null && GameManager.Instance != null)
         {
-            siguienteNivelButton.interactable = false;
+            string next = GameManager.Instance.GetNextLevelSceneName();
+            siguienteNivelButton.interactable = !string.IsNullOrEmpty(next);
         }
     }
 
@@ -37,8 +38,13 @@ public class VictoryPanel : MonoBehaviour
         if (GameManager.Instance != null)
             GameManager.Instance.TriggerVictory();
 
-        if (AudioManager.Instance != null && AudioManager.Instance.musicVictoria != null)
-            AudioManager.Instance.PlayMusic(AudioManager.Instance.musicVictoria, false);
+        // Jingle corto: tocar como SFX (no loop) y parar la musica de fondo
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic(true);
+            if (AudioManager.Instance.musicVictoria != null)
+                AudioManager.Instance.PlaySFX(AudioManager.Instance.musicVictoria);
+        }
 
         if (victoryPanel != null) victoryPanel.SetActive(true);
         if (panelRect != null) StartCoroutine(BounceIn());
@@ -69,7 +75,7 @@ public class VictoryPanel : MonoBehaviour
     public void OnSiguienteNivel()
     {
         if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
-        // Deshabilitado en Avance 2. En Avance 3 se carga Nivel2_Callejones.
+        if (GameManager.Instance != null) GameManager.Instance.GoToNextLevel();
     }
 
     public void OnMenu()

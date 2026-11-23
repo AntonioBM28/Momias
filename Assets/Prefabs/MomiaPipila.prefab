@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5346749162965095490}
   - component: {fileID: 3565540135962542794}
   - component: {fileID: 1143515583546559479}
+  - component: {fileID: 5946602582543809562}
   m_Layer: 9
   m_Name: MomiaPipila
   m_TagString: Enemy
@@ -181,12 +182,54 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.6354}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.833333, y: 1.833333}
+    pivot: {x: 0.5, y: 0.147727}
+    oldSize: {x: 1.8333334, y: 1.8333334}
     newSize: {x: 1.833333, y: 1.833333}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5750, y: 1.2708}
+  m_Size: {x: 0.575, y: 1.2708}
   m_EdgeRadius: 0
+--- !u!114 &5946602582543809562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4519184190491579873}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0435fdfb4ff265439c52b1e79725354, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossPipila
+  data: {fileID: 11400000, guid: 8d8fd1f335084b9a90cf4fc7c69ea3a5, type: 2}
+  colorFlash: {r: 1, g: 1, b: 1, a: 1}
+  duracionFlash: 0.1
+  vidaActual: 0
+  heartPickupPrefab: {fileID: 0}
+  heartDropChance: 0.2
+  velocidadEmbestida: 7
+  pausaEntreEmbestidas: 1.5
+  danioEmbestida: 3
+  fuerzaSalto: 13
+  tiempoEnAire: 1.2
+  radioOnda: 3
+  danioOnda: 2
+  pausaEntreSaltos: 3
+  shockwaveFrames: []
+  colorOnda: {r: 0.6, g: 0.4, b: 0.2, a: 0.9}
+  limiteIzquierdo: -5
+  limiteDerecho: 5
+  OnBossHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBossSpawned:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBossDied:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBossFaseChanged:
+    m_PersistentCalls:
+      m_Calls: []

@@ -35,7 +35,9 @@ public class HitPause : MonoBehaviour
 
     private System.Collections.IEnumerator RutinaFreeze(float duracion)
     {
-        float timeScaleOriginal = Time.timeScale;
+        // IMPORTANTE: NO guardar Time.timeScale actual porque si ya habia
+        // un freeze corriendo, estariamos capturando 0.05 y dejando el juego en camara lenta.
+        // Siempre restauramos a 1 (o a lo que haya en el GameManager si es Pausa).
         Time.timeScale = timeScaleDuranteFreeze;
 
         float t = 0f;
@@ -45,7 +47,12 @@ public class HitPause : MonoBehaviour
             yield return null;
         }
 
-        Time.timeScale = timeScaleOriginal;
+        // Restaurar: si el GameManager esta en Paused, mantener 0; si no, 1
+        if (GameManager.Instance != null && GameManager.Instance.IsPaused)
+            Time.timeScale = 0f;
+        else
+            Time.timeScale = 1f;
+
         rutinaActiva = null;
     }
 }

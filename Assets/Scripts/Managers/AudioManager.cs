@@ -23,6 +23,9 @@ public class AudioManager : MonoBehaviour
     [Header("Pistas de musica (asignar en Chunk 3)")]
     public AudioClip musicMenu;
     public AudioClip musicNivel1;
+    public AudioClip musicNivel2;
+    public AudioClip musicNivel3;
+    public AudioClip musicBossPipila;
     public AudioClip musicVictoria;
     public AudioClip musicGameOver;
 
@@ -89,6 +92,9 @@ public class AudioManager : MonoBehaviour
         if (fade) StartCoroutine(FadeOutMusic());
         else musicSource.Stop();
     }
+
+    public float MusicVolume => musicVolume;
+    public float SFXVolume => sfxVolume;
 
     public void SetMusicVolume(float v)
     {

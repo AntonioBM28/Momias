@@ -83,9 +83,16 @@ public class GameManager : MonoBehaviour
 
     private void ReproducirMusicaDelNivel(string sceneName)
     {
-        if (sceneName != firstLevelSceneName || AudioManager.Instance == null) return;
-        AudioClip musica = AudioManager.Instance.musicNivel1;
-        if (musica != null) AudioManager.Instance.PlayMusic(musica, false);
+        if (AudioManager.Instance == null) return;
+        AudioClip musica = sceneName switch
+        {
+            "Menu"              => AudioManager.Instance.musicMenu,
+            "Nivel1_Museo"      => AudioManager.Instance.musicNivel1,
+            "Nivel2_Alhondiga"  => AudioManager.Instance.musicNivel2,
+            "Nivel3_Callejones" => AudioManager.Instance.musicNivel3,
+            _ => null
+        };
+        if (musica != null) AudioManager.Instance.PlayMusic(musica, true);
     }
 
     // --- Metodos publicos para disparar transiciones ---
@@ -150,6 +157,35 @@ public class GameManager : MonoBehaviour
             SceneTransition.Instance.LoadSceneWithFade(firstLevelSceneName);
         else
             SceneManager.LoadScene(firstLevelSceneName);
+    }
+
+    /// <summary>Nombre de la escena siguiente a la actual, o "" si no hay.</summary>
+    public string GetNextLevelSceneName()
+    {
+        string current = SceneManager.GetActiveScene().name;
+        return current switch
+        {
+            "Nivel1_Museo"      => "Nivel2_Alhondiga",
+            "Nivel2_Alhondiga"  => "Nivel3_Callejones",
+            "Nivel3_Callejones" => "",   // por ahora no hay Nivel 4
+            _ => ""
+        };
+    }
+
+    public void GoToNextLevel()
+    {
+        string next = GetNextLevelSceneName();
+        if (string.IsNullOrEmpty(next))
+        {
+            Debug.LogWarning("[GameManager] No hay nivel siguiente, voy al menu.");
+            GoToMenu();
+            return;
+        }
+        Time.timeScale = 1f;
+        if (SceneTransition.Instance != null)
+            SceneTransition.Instance.LoadSceneWithFade(next);
+        else
+            SceneManager.LoadScene(next);
     }
 
     public void RestartCurrentLevel()

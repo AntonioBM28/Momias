@@ -201,17 +201,17 @@ public static class Chunk1Setup
         SetStretchFull(vpanelRt);
         var vpanelScript = vpanelGo.AddComponent<VictoryPanel>();
 
-        // VPanel visible dorado
-        var vpanel = CreateImage("VPanel", vpanelGo.transform, new Color(180f/255f, 140f/255f, 40f/255f, 220f/255f));
+        // VPanel: oscuro semitransparente estilo pausa/opciones
+        var vpanel = CreateImage("VPanel", vpanelGo.transform, new Color(0.08f, 0.06f, 0.12f, 0.92f));
         SetStretchFull(vpanel.rectTransform);
 
-        var vtitle = CreateTMP("TituloV", vpanel.transform, "¡NIVEL 1 COMPLETADO!", 110, Color.white);
+        var vtitle = CreateTMP("TituloV", vpanel.transform, "¡NIVEL COMPLETADO!", 130, new Color(1f, 0.78f, 0.28f, 1f));
         var vtitleRt = vtitle.rectTransform;
         SetAnchor(vtitleRt, 0.5f, 1f);
         vtitleRt.anchoredPosition = new Vector2(0, -220);
         vtitleRt.sizeDelta = new Vector2(1700, 180);
 
-        var vsub = CreateTMP("SubtituloV", vpanel.transform, "Has recuperado la Campana Sagrada del Museo", 36, Color.white);
+        var vsub = CreateTMP("SubtituloV", vpanel.transform, "Has recuperado la Campana Sagrada", 36, new Color(1f, 0.92f, 0.70f, 0.9f));
         var vsubRt = vsub.rectTransform;
         SetAnchor(vsubRt, 0.5f, 1f);
         vsubRt.anchoredPosition = new Vector2(0, -400);

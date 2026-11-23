@@ -42,12 +42,11 @@ public class OptionsPanel : MonoBehaviour
 
     private float ObtenerVolumenMusica()
     {
-        // AudioManager no expone getters; usamos default razonable
-        return 0.6f;
+        return AudioManager.Instance != null ? AudioManager.Instance.MusicVolume : 0.6f;
     }
 
     private float ObtenerVolumenSFX()
     {
-        return 1.0f;
+        return AudioManager.Instance != null ? AudioManager.Instance.SFXVolume : 1.0f;
     }
 }

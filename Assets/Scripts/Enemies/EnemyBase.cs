@@ -116,6 +116,7 @@ public abstract class EnemyBase : MonoBehaviour
         if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.08f, 0.08f);
         if (HitPause.Instance != null) HitPause.Instance.Freeze(0.06f);
         DustBurst.Spawn(transform.position, new Color(0.6f, 0.5f, 0.4f, 1f));
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMuerteMomia();
     }
 
     private System.Collections.IEnumerator RutinaMorir()

@@ -35,5 +35,6 @@ public class MomiaBebe : MomiaCaminante
     {
         if (HitPause.Instance != null) HitPause.Instance.Freeze(0.03f);
         DustBurst.Spawn(transform.position, new Color(0.75f, 0.65f, 0.55f, 1f));
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayMuerteMomia();
     }
 }
