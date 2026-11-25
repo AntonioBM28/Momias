@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 2193367216054112795}
   - component: {fileID: 2840512638445997955}
   - component: {fileID: 8594868697636088627}
+  - component: {fileID: 3837109139727037136}
   m_Layer: 9
   m_Name: MomiaMadre
   m_TagString: Enemy
@@ -222,3 +223,47 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.55, y: 1.2}
   m_EdgeRadius: 0
+--- !u!114 &3837109139727037136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716379017035293030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f79b3622d3010ba458e4e34a0ff3c20b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MomiaMadre
+  data: {fileID: 11400000, guid: 5a84e8b639952564dbdd17bed6719270, type: 2}
+  colorFlash: {r: 1, g: 1, b: 1, a: 1}
+  duracionFlash: 0.1
+  vidaActual: 0
+  heartPickupPrefab: {fileID: 0}
+  heartDropChance: 0.12
+  puntoAtaque: {fileID: 387467602109455511}
+  distanciaGolpe: 1.6
+  radioImpactoGolpe: 1.2
+  tiempoImpactoGolpe: 0.333
+  cadenciaGolpe: 1.8
+  velocidadEmbestida: 5
+  duracionEmbestida: 1.2
+  distanciaMinimaEmbestida: 3
+  prefabMiniMomia: {fileID: 7313754212107019590, guid: 449bce67a5f61ce4fa9e0d1d12c0effb, type: 3}
+  dataMiniMomia: {fileID: 11400000, guid: 181b5372d5f74634a996bf6cf155fd50, type: 2}
+  miniMomiasPorInvocar: 2
+  cadenciaInvocar: 8
+  limiteIzquierdo: -4.5
+  limiteDerecho: 4.5
+  OnBossHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBossSpawned:
+    m_PersistentCalls:
+      m_Calls: []
+  OnBossDied:
+    m_PersistentCalls:
+      m_Calls: []
+  OnFaseChanged:
+    m_PersistentCalls:
+      m_Calls: []

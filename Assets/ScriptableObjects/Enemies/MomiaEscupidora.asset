@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   nombre: Momia Escupidora
   vidaMaxima: 3
-  velocidad: 1
+  velocidad: 2.2
   danio: 2
   tinte: {r: 1, g: 1, b: 1, a: 1}
   escala: 1.3

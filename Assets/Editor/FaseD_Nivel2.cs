@@ -63,7 +63,7 @@ public static class FaseD_Nivel2
         SpawnGameUI();
         SpawnWaveManager();
         SpawnBossYHealthBar();
-        AddBuildSettingsIfMissing();
+        AddBuildSettingsIfMissing(PATH_SCENE_N2);
 
         Scene s = EditorSceneManager.GetActiveScene();
         EditorSceneManager.MarkSceneDirty(s);
@@ -253,6 +253,12 @@ public static class FaseD_Nivel2
     public static void SpawnManagersSiFaltan()
     {
         OpenScene();
+        SpawnManagersEnEscenaActual();
+    }
+
+    /// <summary>Crea/valida los managers en la escena ACTUAL. Caller responsable de abrir escena.</summary>
+    public static void SpawnManagersEnEscenaActual()
+    {
         if (GameObject.Find("GameManager") == null) new GameObject("GameManager").AddComponent<GameManager>();
         if (GameObject.Find("AudioManager") == null) new GameObject("AudioManager").AddComponent<AudioManager>();
         if (GameObject.Find("SceneTransition") == null) new GameObject("SceneTransition").AddComponent<SceneTransition>();
@@ -273,13 +279,11 @@ public static class FaseD_Nivel2
             }
         }
 
-        // Asignar automaticamente los clips de audio por GUID al AudioManager de esta escena
         AsignarAudiosAlAudioManager();
-
-        Debug.Log("[N2] ✅ Managers verificados (persistentes via DontDestroyOnLoad si ya existian)");
+        Debug.Log("[Managers] ✅ Managers verificados en escena actual");
     }
 
-    private static void AsignarAudiosAlAudioManager()
+    public static void AsignarAudiosAlAudioManager()
     {
         GameObject amGo = GameObject.Find("AudioManager");
         if (amGo == null) return;
@@ -295,6 +299,13 @@ public static class FaseD_Nivel2
             { "musicGameOver",    "217bd4c264b544bd962ed111185c8747" },
             { "musicVictoria",    "bfa52ab38825496984bf0bd166ffb19d" },
             { "sfxMuerteMomia",   "5cae12120dea4c21829566ca209de12b" },
+            // Nuevos audios de Antonio (Nov 24)
+            { "musicNivel4",           "b7e66099704079e49bc9a519e793fc29" },
+            { "musicBossMomiaMadre",   "33706be2353b1af4b8826b1c3cb2433f" },
+            { "sfxDanoDiego",          "cb39fb9bd8bb6f1408c1701e2d63abb9" },
+            { "sfxSalto",              "68cc3e9be06af4b40bff8d0d8a7faeed" },
+            { "sfxUIClick",            "160ce2d877d5a35458f242b648dc830c" },
+            { "sfxPickupCorazon",      "01b24a95dc16d814e9839b859b6beb5e" },
         };
 
         SerializedObject so = new SerializedObject(am);
@@ -401,7 +412,7 @@ public static class FaseD_Nivel2
         BuildPauseMenuInline(canvas);
     }
 
-    private static void BuildPauseMenuInline(GameObject canvas)
+    public static void BuildPauseMenuInline(GameObject canvas)
     {
         GameObject pmRoot = new GameObject("PauseMenu", typeof(RectTransform));
         pmRoot.transform.SetParent(canvas.transform, false);
@@ -506,7 +517,7 @@ public static class FaseD_Nivel2
         Debug.Log("[N2] ✅ PauseMenu construido en Nivel 2");
     }
 
-    private static Button CrearBotonMenu(Transform parent, string nombre, string texto, float x, float y)
+    public static Button CrearBotonMenu(Transform parent, string nombre, string texto, float x, float y)
     {
         var go = new GameObject(nombre, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button), typeof(ButtonHover));
         go.transform.SetParent(parent, false);
@@ -621,7 +632,7 @@ public static class FaseD_Nivel2
         }
         GameObject boss = (GameObject)PrefabUtility.InstantiatePrefab(pipilaPrefab);
         boss.name = "BossPipila";
-        boss.transform.position = new Vector3(0f, 1f, 0f);
+        boss.transform.position = new Vector3(0f, -1f, 0f);
         boss.SetActive(false);
 
         BossPipila bp = boss.GetComponent<BossPipila>();
@@ -646,22 +657,29 @@ public static class FaseD_Nivel2
         GameObject bridgeGo = new GameObject("BossBridge");
         BossBridge bridge = bridgeGo.AddComponent<BossBridge>();
         bridge.boss = bp;
+        bridge.bossName = "MOMIA-PIPILA";
         bridge.bar = bar;
         bridge.bellSprite = AssetDatabase.LoadAssetAtPath<Sprite>(PATH_BELL_SPRITE);
         if (bridge.bellSprite == null)
             Debug.LogWarning($"[N2] Sprite de Campana no encontrado en {PATH_BELL_SPRITE}");
 
         // Hook del WaveManager: cuando se completan todas las oleadas → bridge.AparicionBoss
+        // IMPORTANTE: BossBridge.Start() ya hace auto-hook runtime, pero tambien limpiamos
+        // persistent listeners fantasmas (del tipo viejo Assembly-CSharp-Editor que ya no existe)
+        // y agregamos el nuevo como backup.
         WaveManager wm = Object.FindFirstObjectByType<WaveManager>();
         if (wm != null)
         {
-            UnityEventTools.RemovePersistentListener(wm.OnAllWavesCompleted, bridge.AparicionBoss);
+            // Limpiar TODOS los persistent listeners fantasmas del evento
+            int count = wm.OnAllWavesCompleted.GetPersistentEventCount();
+            for (int i = count - 1; i >= 0; i--)
+                UnityEventTools.RemovePersistentListener(wm.OnAllWavesCompleted, i);
+            Debug.Log($"[N2] Limpiados {count} persistent listener(s) fantasma(s) de OnAllWavesCompleted");
+
             UnityEventTools.AddPersistentListener(wm.OnAllWavesCompleted, bridge.AparicionBoss);
 
             // CRITICO: el WaveManager por default spawnea su propia Campana al terminar.
             // En Nivel 2 NO queremos eso — bridge se encarga despues de matar al boss.
-            // Dejar el sprite null hace que SpawnCampanaSagrada haga early-return con error.
-            // Mejor: quitamos el sprite para que no intente ni spawnear.
             SerializedObject wmSo = new SerializedObject(wm);
             wmSo.FindProperty("spriteCampanaSagrada").objectReferenceValue = null;
             wmSo.ApplyModifiedProperties();
@@ -702,8 +720,9 @@ public static class FaseD_Nivel2
             // Collider2D: siempre ajustar a tamano local 1.0x2.2 (con escala 2.3 world = 2.3x5.06)
             BoxCollider2D col = root.GetComponent<BoxCollider2D>();
             if (col == null) col = root.AddComponent<BoxCollider2D>();
-            col.size = new Vector2(1.0f, 2.2f);
-            col.offset = new Vector2(0f, 0f);
+            // Pivot del sprite esta al 17% desde abajo (pies). Alinear bottom del collider con los pies.
+            col.size = new Vector2(0.9f, 1.9f);
+            col.offset = new Vector2(0f, 0.95f);
 
             PrefabUtility.SaveAsPrefabAsset(root, PATH_PREFAB_PIPILA);
         }
@@ -755,6 +774,7 @@ public static class FaseD_Nivel2
         var whiteGo = new GameObject("DanioRecibido", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         whiteGo.transform.SetParent(bgGo.transform, false);
         var whiteImg = whiteGo.GetComponent<Image>();
+        whiteImg.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");  // sprite built-in para que fillAmount funcione
         whiteImg.color = Color.white;
         whiteImg.type = Image.Type.Filled;
         whiteImg.fillMethod = Image.FillMethod.Horizontal;
@@ -769,6 +789,7 @@ public static class FaseD_Nivel2
         var goldGo = new GameObject("Vida", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
         goldGo.transform.SetParent(bgGo.transform, false);
         var goldImg = goldGo.GetComponent<Image>();
+        goldImg.sprite = AssetDatabase.GetBuiltinExtraResource<Sprite>("UI/Skin/UISprite.psd");  // sprite built-in para que fillAmount funcione
         goldImg.color = DORADO;
         goldImg.type = Image.Type.Filled;
         goldImg.fillMethod = Image.FillMethod.Horizontal;
@@ -816,7 +837,7 @@ public static class FaseD_Nivel2
         prop.FindPropertyRelative("pausaAntesDeOleada").floatValue = pausa;
     }
 
-    private static void BuildHeartsHUDSiFalta()
+    public static void BuildHeartsHUDSiFalta()
     {
         GameObject canvas = GameObject.Find("GameUI_Canvas");
         if (canvas == null) return;
@@ -870,7 +891,7 @@ public static class FaseD_Nivel2
         Debug.Log("[N2] PauseMenu: usa 'Momias/Fase B/4. Rebuild PauseMenu en Nivel 1' adaptado manualmente, o lo armamos luego");
     }
 
-    private static void AddBuildSettingsIfMissing()
+    public static void AddBuildSettingsIfMissing(string scenePath)
     {
         // Verifica que Nivel2_Alhondiga este en Build Settings
         var scenes = EditorBuildSettings.scenes;
@@ -879,84 +900,5 @@ public static class FaseD_Nivel2
         list.Add(new EditorBuildSettingsScene(PATH_SCENE_N2, true));
         EditorBuildSettings.scenes = list.ToArray();
         Debug.Log("[N2] ✅ Nivel2_Alhondiga agregado a Build Settings");
-    }
-}
-
-/// <summary>
-/// Puente entre eventos: cuando WaveManager termina oleadas → spawn Boss.
-/// Cuando Boss muere → spawn Campana Sagrada + ocultar barra.
-/// </summary>
-public class BossBridge : MonoBehaviour
-{
-    public BossPipila boss;
-    public BossHealthBar bar;
-    public Sprite bellSprite;
-
-    private bool bossActivado;
-    private bool suscrito;
-
-    public void AparicionBoss()
-    {
-        if (bossActivado || boss == null) return;
-        bossActivado = true;
-
-        // 1. Activar boss (dispara su Awake)
-        boss.gameObject.SetActive(true);
-
-        // 2. Suscribir eventos DESPUES de activar (fix bug: antes se suscribia en Start del Bridge
-        //    cuando el Boss estaba disabled, orden de ejecucion fragil)
-        if (!suscrito)
-        {
-            boss.OnBossDied.AddListener(OnBossMurio);
-            boss.OnBossHealthChanged.AddListener(OnHPChanged);
-            suscrito = true;
-            Debug.Log("[BossBridge] Eventos suscritos al boss");
-        }
-
-        // 3. Inicializar barra con vida max del SO
-        int vidaMax = boss.Data != null ? boss.Data.vidaMaxima : 15;
-        if (bar != null)
-        {
-            bar.Inicializar("MOMIA-PIPILA", vidaMax);
-            bar.MostrarConFade();
-            // Forzar SetVida al valor actual del boss (puede que Start ya haya corrido o no)
-            bar.SetVida(boss.VidaActual > 0 ? boss.VidaActual : vidaMax);
-        }
-
-        // 4. Crossfade a musica de boss
-        if (AudioManager.Instance != null && AudioManager.Instance.musicBossPipila != null)
-            AudioManager.Instance.PlayMusic(AudioManager.Instance.musicBossPipila, true);
-
-        if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.3f, 0.5f);
-        Debug.Log($"[BossBridge] ⚔️ Boss aparecio, vidaMax={vidaMax}, bar={(bar!=null?"OK":"NULL")}");
-    }
-
-    private void OnHPChanged(int actual, int max)
-    {
-        Debug.Log($"[BossBridge] OnHPChanged recibido -> {actual}/{max}");  // TMP debug
-        if (bar != null) bar.SetVida(actual);
-    }
-
-    private void OnBossMurio()
-    {
-        if (bar != null) bar.OcultarConFade();
-        SpawnCampanaSagrada();
-    }
-
-    private void SpawnCampanaSagrada()
-    {
-        if (bellSprite == null)
-        {
-            Debug.LogWarning("[BossBridge] bellSprite null, no spawnea Campana Sagrada");
-            return;
-        }
-        GameObject campana = new GameObject("Campana Sagrada Nivel 2");
-        campana.transform.position = new Vector3(0f, -1.3f, 0f);
-        SpriteRenderer sr = campana.AddComponent<SpriteRenderer>();
-        sr.sprite = bellSprite;
-        sr.sortingOrder = 15;
-        campana.AddComponent<CircleCollider2D>();
-        campana.AddComponent<SacredBell>();
-        Debug.Log("[BossBridge] 🔔 Campana Sagrada spawneada");
     }
 }

@@ -17,5 +17,5 @@ MonoBehaviour:
   velocidad: 1.2
   danio: 3
   tinte: {r: 1, g: 1, b: 1, a: 1}
-  escala: 2.3
+  escala: 1.8
   chispasEco: 10

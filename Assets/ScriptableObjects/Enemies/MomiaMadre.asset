@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MomiaMadre
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   nombre: Momia Madre
-  vidaMaxima: 30
+  vidaMaxima: 50
   velocidad: 1.2
   danio: 4
   tinte: {r: 1, g: 1, b: 1, a: 1}

@@ -14,6 +14,8 @@ public class WaveManager : MonoBehaviour
         public int cantidad = 3;
         public float intervaloSpawn = 1.5f;
         public float pausaAntesDeOleada = 2f;
+        [Tooltip("Si true, pasa a la siguiente oleada SIN esperar que mueran los enemigos de esta. Permite fluir varias sub-oleadas como UNA sola oleada logica.")]
+        public bool continuarSinEsperarMuertes = false;
     }
 
     [Header("Spawners")]
@@ -48,7 +50,48 @@ public class WaveManager : MonoBehaviour
     {
         if (corriendo || oleadas.Count == 0) return;
         corriendo = true;
+        ShuffleBloquesRandom();
         StartCoroutine(LoopOleadas());
+    }
+
+    /// <summary>
+    /// Dentro de cada bloque lógico (sub-oleadas consecutivas con continuarSinEsperarMuertes=true
+    /// terminando en una con false), shuffle el orden de los tipos de enemigos.
+    /// Los intervalos/pausas se mantienen en sus posiciones; solo rota el tipo/cantidad.
+    /// </summary>
+    private void ShuffleBloquesRandom()
+    {
+        int i = 0;
+        while (i < oleadas.Count)
+        {
+            int fin = i;
+            while (fin < oleadas.Count && oleadas[fin].continuarSinEsperarMuertes) fin++;
+            int len = fin - i + 1;
+            if (len > 1)
+            {
+                // Snapshot de tipos del bloque
+                var tipos = new List<(GameObject prefab, EnemyData data, int cant)>();
+                for (int k = i; k <= fin && k < oleadas.Count; k++)
+                    tipos.Add((oleadas[k].prefabEnemigo, oleadas[k].dataEnemigo, oleadas[k].cantidad));
+
+                // Fisher-Yates shuffle
+                for (int k = tipos.Count - 1; k > 0; k--)
+                {
+                    int j = Random.Range(0, k + 1);
+                    (tipos[k], tipos[j]) = (tipos[j], tipos[k]);
+                }
+
+                // Reasignar en orden shuffled
+                for (int k = 0; k < len && (i + k) < oleadas.Count; k++)
+                {
+                    oleadas[i + k].prefabEnemigo = tipos[k].prefab;
+                    oleadas[i + k].dataEnemigo = tipos[k].data;
+                    oleadas[i + k].cantidad = tipos[k].cant;
+                }
+                Debug.Log($"[WaveManager] Bloque {i}-{fin} shuffleado ({len} sub-oleadas)");
+            }
+            i = fin + 1;
+        }
     }
 
     private IEnumerator LoopOleadas()
@@ -73,15 +116,33 @@ public class WaveManager : MonoBehaviour
                 yield return new WaitForSeconds(o.intervaloSpawn);
             }
 
-            Debug.Log($"[WaveManager] Oleada {i + 1} spawneada. Esperando a que mueran todos.");
+            Debug.Log($"[WaveManager] Oleada {i + 1} spawneada.");
 
-            while (enemigosVivos > 0)
+            // Si la oleada quiere continuar sin esperar, saltamos el bloqueo
+            if (o.continuarSinEsperarMuertes)
+            {
+                Debug.Log($"[WaveManager] Oleada {i + 1} continua sin esperar muertes (fluye con siguiente).");
+                continue;
+            }
+
+            // FIX: esperar a TODOS los enemigos vivos en escena, no solo los de esta sub-oleada
+            // (sino al terminar la ultima sub con continuar=false, campana aparece con momias aun vivas)
+            while (true)
             {
                 LimpiarMuertos();
+                if (vivos.Count == 0) break;
                 yield return new WaitForSeconds(0.3f);
             }
 
-            Debug.Log($"[WaveManager] Oleada {i + 1} completada.");
+            Debug.Log($"[WaveManager] Oleada {i + 1} completada (todos los vivos muertos).");
+        }
+
+        // Al cerrar el loop, asegurar que no queden vivos en escena antes de disparar Victory
+        while (true)
+        {
+            LimpiarMuertos();
+            if (vivos.Count == 0) break;
+            yield return new WaitForSeconds(0.3f);
         }
 
         corriendo = false;

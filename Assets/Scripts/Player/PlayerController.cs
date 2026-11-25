@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movimiento")]
     [SerializeField] private float velocidad = 5f;
     [SerializeField] private float velocidadAgachado = 1.5f;
-    [SerializeField] private float fuerzaSalto = 11f;
+    [SerializeField] private float fuerzaSalto = 13f;
 
     [Header("Deteccion de suelo")]
     [SerializeField] private Transform checkSuelo;

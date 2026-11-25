@@ -23,7 +23,7 @@ public class BossPipila : EnemyBase
     [SerializeField] private float danioEmbestida = 3f;
 
     [Header("Fase 2 - Salto + Onda")]
-    [SerializeField] private float fuerzaSalto = 13f;
+    [SerializeField] private float fuerzaSalto = 8f;
     [SerializeField] private float tiempoEnAire = 1.2f;
     [SerializeField] private float radioOnda = 3f;
     [SerializeField] private float danioOnda = 2f;
@@ -32,8 +32,8 @@ public class BossPipila : EnemyBase
     [SerializeField] private Color colorOnda = new Color(0.6f, 0.4f, 0.2f, 0.9f);
 
     [Header("Limites de arena")]
-    [SerializeField] private float limiteIzquierdo = -3.5f;
-    [SerializeField] private float limiteDerecho = 3.5f;
+    [SerializeField] private float limiteIzquierdo = -2.8f;
+    [SerializeField] private float limiteDerecho = 2.8f;
 
     [Header("Eventos")]
     public UnityEvent<int, int> OnBossHealthChanged;
@@ -47,6 +47,7 @@ public class BossPipila : EnemyBase
     protected override void Start()
     {
         base.Start();
+        rb.interpolation = RigidbodyInterpolation2D.None;  // fix: con escala grande extrapolacion se nota fuera de limites
         OnBossSpawned?.Invoke();
         OnBossHealthChanged?.Invoke(vidaActual, data != null ? data.vidaMaxima : 15);
         StartCoroutine(RutinaIA());
@@ -119,7 +120,7 @@ public class BossPipila : EnemyBase
         // Embiste con clamp duro cada FixedUpdate sobre rb.position
         if (anim != null) anim.SetBool("Caminando", true);
         float destino = dirX > 0 ? limiteDerecho : limiteIzquierdo;
-        while (!estaMuerto && Mathf.Abs(rb.position.x - destino) > 0.2f)
+        while (!estaMuerto && Mathf.Abs(rb.position.x - destino) > 0.5f)
         {
             // Si ya llego al limite en la direccion de avance, cortar
             if (rb.position.x <= limiteIzquierdo && dirX < 0) break;
@@ -136,7 +137,7 @@ public class BossPipila : EnemyBase
             {
                 float dx = Mathf.Abs(playerTransform.position.x - transform.position.x);
                 float dy = Mathf.Abs(playerTransform.position.y - transform.position.y);
-                if (dx < 0.7f && dy < 1.0f) HacerDanioAPlayer(danioEmbestida);
+                if (dx < 1.5f && dy < 2.8f) HacerDanioAPlayer(danioEmbestida);
             }
             yield return new WaitForFixedUpdate();
         }

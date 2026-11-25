@@ -55,12 +55,19 @@ public class PlayerHealth : MonoBehaviour
         vidaActual = Mathf.Max(0, vidaActual - cantidad);
         OnHealthChanged?.Invoke(vidaActual, vidaMaxima);
         OnDamaged?.Invoke();
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayDanoDiego();
 
         // Game feel: shake + hitpause al recibir dano
         if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.12f, 0.15f);
         if (HitPause.Instance != null) HitPause.Instance.Freeze(0.03f);
 
         Debug.Log($"[Diego] Recibió daño. Vida: {vidaActual}/{vidaMaxima}");
+        // Persistir vida en SaveSystem
+        if (!EstaMuerto)
+        {
+            int nivel = SaveSystem.NivelDeEscena(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
+            if (nivel > 0) SaveSystem.GuardarPartida(nivel, vidaActual);
+        }
 
         if (vidaActual <= 0)
         {

@@ -26,6 +26,7 @@ public class BossHealthBar : MonoBehaviour
     private float fillDelayed;
     private Vector2 posicionOculta;
     private Vector2 posicionVisible;
+    private EnemyBase bossRef;  // referencia directa para polling robusto (fallback a eventos)
 
     void Awake()
     {
@@ -46,6 +47,13 @@ public class BossHealthBar : MonoBehaviour
         fillDelayed = 1f;
         if (barraVida != null) barraVida.fillAmount = 1f;
         if (barraDanoRecibido != null) barraDanoRecibido.fillAmount = 1f;
+    }
+
+    /// <summary>Guarda referencia al boss para hacer polling de VidaActual cada frame.</summary>
+    public void SetBoss(EnemyBase boss)
+    {
+        bossRef = boss;
+        Debug.Log($"[BossHealthBar] SetBoss -> {(boss!=null?boss.name:"NULL")}");
     }
 
     public void MostrarConFade()
@@ -105,6 +113,17 @@ public class BossHealthBar : MonoBehaviour
 
     void Update()
     {
+        // POLLING directo del boss (fallback robusto si los eventos UnityEvent fallan)
+        if (bossRef != null && vidaMaxima > 0 && !bossRef.EstaMuerto)
+        {
+            float nuevaFill = Mathf.Clamp01(bossRef.VidaActual / (float)vidaMaxima);
+            if (Mathf.Abs(nuevaFill - fillActual) > 0.001f)
+            {
+                fillActual = nuevaFill;
+                if (barraVida != null) barraVida.fillAmount = fillActual;
+            }
+        }
+
         // La barra delayed (blanca) persigue a la barra vida real
         if (fillDelayed > fillActual)
         {

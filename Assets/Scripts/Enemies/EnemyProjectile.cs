@@ -52,10 +52,17 @@ public class EnemyProjectile : MonoBehaviour
         }
     }
 
-    /// <summary>Lanza el proyectil con velocidad inicial (parabolica).</summary>
+    /// <summary>Lanza el proyectil con velocidad inicial (parabolica). Flip visual si va a la izquierda.</summary>
     public void Lanzar(Vector2 velocidadInicial)
     {
         rb.linearVelocity = velocidadInicial;
+        // Flip sprite + collider offset si va a la izquierda
+        if (velocidadInicial.x < 0f)
+        {
+            sr.flipX = true;
+            var cc = GetComponent<CircleCollider2D>();
+            if (cc != null) cc.offset = new Vector2(-Mathf.Abs(cc.offset.x), cc.offset.y);
+        }
     }
 
     /// <summary>Lo destruye con pequeno VFX (lo llama AttackHitbox al impacto del campanazo).</summary>

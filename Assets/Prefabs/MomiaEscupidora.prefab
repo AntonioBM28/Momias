@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 4262912665428745710}
   - component: {fileID: 4616059314445800828}
   - component: {fileID: 3439488162427938806}
+  - component: {fileID: 320875614664670394}
   m_Layer: 9
   m_Name: MomiaEscupidora
   m_TagString: Enemy
@@ -222,3 +223,30 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.5, y: 0.9}
   m_EdgeRadius: 0
+--- !u!114 &320875614664670394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8733023673925143661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d169ddde1de94146851dcbf70699e02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MomiaEscupidora
+  data: {fileID: 11400000, guid: 8e5e1eca2c655904a882cc05e1ac692f, type: 2}
+  colorFlash: {r: 1, g: 1, b: 1, a: 1}
+  duracionFlash: 0.1
+  vidaActual: 0
+  heartPickupPrefab: {fileID: 6222275962859468466, guid: 192fca4bed5608b47abd0b1daecda0ca, type: 3}
+  heartDropChance: 0.2
+  cadenciaDisparo: 2.5
+  windUp: 0.4
+  proyectilPrefab: {fileID: 3777463054514592565, guid: eb0c3aa100f88c64ebbdff99b853d9fc, type: 3}
+  puntoDisparo: {fileID: 5191996736855355750}
+  gravedadProyectil: 1
+  velocidadProyectilBase: 5
+  sfxEscupir: {fileID: 0}
+  rangoMin: 2.5
+  rangoMax: 8

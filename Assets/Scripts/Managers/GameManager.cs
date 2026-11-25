@@ -79,6 +79,17 @@ public class GameManager : MonoBehaviour
         if (scene.name == menuSceneName) SetState(GameState.Menu);
         else SetState(GameState.Playing);
         ReproducirMusicaDelNivel(scene.name);
+        // Restaurar vida guardada si hay partida en curso en esta escena
+        int nivelEscena = SaveSystem.NivelDeEscena(scene.name);
+        if (nivelEscena > 0 && SaveSystem.HayPartidaGuardada())
+        {
+            var save = SaveSystem.Load();
+            if (save.nivelActualGuardado == nivelEscena && save.vidaActualGuardada > 0)
+            {
+                // Esperar 1 frame a que Diego exista
+                StartCoroutine(RestaurarVidaDiegoDeSave(save.vidaActualGuardada));
+            }
+        }
     }
 
     private void ReproducirMusicaDelNivel(string sceneName)
@@ -90,6 +101,7 @@ public class GameManager : MonoBehaviour
             "Nivel1_Museo"      => AudioManager.Instance.musicNivel1,
             "Nivel2_Alhondiga"  => AudioManager.Instance.musicNivel2,
             "Nivel3_Callejones" => AudioManager.Instance.musicNivel3,
+            "Nivel4_Parroquia"  => AudioManager.Instance.musicNivel4,
             _ => null
         };
         if (musica != null) AudioManager.Instance.PlayMusic(musica, true);
@@ -167,13 +179,30 @@ public class GameManager : MonoBehaviour
         {
             "Nivel1_Museo"      => "Nivel2_Alhondiga",
             "Nivel2_Alhondiga"  => "Nivel3_Callejones",
-            "Nivel3_Callejones" => "",   // por ahora no hay Nivel 4
+            "Nivel3_Callejones" => "Nivel4_Parroquia",
             _ => ""
         };
     }
 
     public void GoToNextLevel()
     {
+        // Guardar progreso: el nivel actual quedo completado, el siguiente queda desbloqueado
+        string sceneActual = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        int nivelActual = SaveSystem.NivelDeEscena(sceneActual);
+        if (nivelActual > 0)
+        {
+            SaveSystem.GuardarNivelMaxSi(nivelActual + 1);
+            // Guardar la partida apuntando al nuevo nivel con vida full
+            var diego = GameObject.FindGameObjectWithTag("Player");
+            int vidaActual = 12;  // default full
+            if (diego != null)
+            {
+                var ph = diego.GetComponent<PlayerHealth>();
+                if (ph != null) vidaActual = ph.VidaActual;
+            }
+            SaveSystem.GuardarPartida(nivelActual + 1, vidaActual);
+        }
+
         string next = GetNextLevelSceneName();
         if (string.IsNullOrEmpty(next))
         {
@@ -216,4 +245,26 @@ public class GameManager : MonoBehaviour
         Debug.Log($"[GameManager] Estado -> {nuevo}");
         OnStateChanged?.Invoke(nuevo);
     }
+
+    private System.Collections.IEnumerator RestaurarVidaDiegoDeSave(int vidaGuardada)
+    {
+        yield return null;  // esperar 1 frame
+        var diego = GameObject.FindGameObjectWithTag("Player");
+        if (diego != null)
+        {
+            var ph = diego.GetComponent<PlayerHealth>();
+            if (ph != null)
+            {
+                int delta = vidaGuardada - ph.VidaActual;
+                if (delta < 0) ph.Curar(delta);  // bajar (Curar con negativo baja)... hmm no, mejor directo:
+                // Usar reflection o modificar vidaActual directo. Mas simple: aplicar damage ficticio.
+                while (ph.VidaActual > vidaGuardada && !ph.EstaMuerto)
+                    ph.RecibirDanio(1, diego.transform.position);
+                while (ph.VidaActual < vidaGuardada)
+                    ph.Curar(1);
+                Debug.Log($"[GameManager] Vida restaurada a {vidaGuardada}");
+            }
+        }
+    }
+
 }

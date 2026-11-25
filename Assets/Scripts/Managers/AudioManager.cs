@@ -26,6 +26,8 @@ public class AudioManager : MonoBehaviour
     public AudioClip musicNivel2;
     public AudioClip musicNivel3;
     public AudioClip musicBossPipila;
+    public AudioClip musicNivel4;
+    public AudioClip musicBossMomiaMadre;
     public AudioClip musicVictoria;
     public AudioClip musicGameOver;
 
@@ -37,12 +39,17 @@ public class AudioManager : MonoBehaviour
     public AudioClip sfxPickupCorazon;
     public AudioClip sfxCampanaSagrada;
     public AudioClip sfxUIClick;
+    public AudioClip sfxDanoDiego;
 
     [Header("Configuracion")]
     [SerializeField] private float musicFadeDuration = 1f;
 
     void Awake()
     {
+        // Cargar volumenes persistidos
+        var save = SaveSystem.Load();
+        MusicVolume = save.volumenMusica;
+        SFXVolume = save.volumenSFX;
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -162,4 +169,5 @@ public class AudioManager : MonoBehaviour
     public void PlayPickupCorazon() => PlaySFX(sfxPickupCorazon);
     public void PlayCampanaSagrada() => PlaySFX(sfxCampanaSagrada);
     public void PlayUIClick() => PlaySFX(sfxUIClick, 0.8f);
+    public void PlayDanoDiego() => PlaySFX(sfxDanoDiego);
 }

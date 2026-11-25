@@ -50,11 +50,22 @@ public class MainMenu : MonoBehaviour
 
     public void OnJugar()
     {
-        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
-        if (GameManager.Instance != null)
+        if (SaveSystem.HayPartidaGuardada())
         {
+            var save = SaveSystem.Load();
+            string escena = SaveSystem.EscenaDeNivel(save.nivelActualGuardado);
+            Debug.Log($"[MainMenu] Continuando partida en {escena} con vida {save.vidaActualGuardada}");
+            if (SceneTransition.Instance != null)
+                SceneTransition.Instance.CargarEscena(escena);
+            else
+                UnityEngine.SceneManagement.SceneManager.LoadScene(escena);
+        }
+        else if (GameManager.Instance != null)
+        {
+            SaveSystem.LimpiarPartida();  // asegura arranque limpio
             GameManager.Instance.GoToFirstLevel();
         }
+    }
         else
         {
             // Fallback sin GameManager
