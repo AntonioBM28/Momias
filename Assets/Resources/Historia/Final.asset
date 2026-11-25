@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4cf3e08eef503042b5b5795846b8b4b, type: 3}
+  m_Name: Final
+  m_EditorClassIdentifier: Assembly-CSharp::HistoriaData
+  diapositivas:
+  - imagen: {fileID: 21300000, guid: d1296af308949a84ead56e59f8547558, type: 3}
+    texto: "La Momia Madre cay\xF3."
+  - imagen: {fileID: 21300000, guid: da42b263ccc41fd47ac68b06b8e4dca8, type: 3}
+    texto: "Con el \xFAltimo campanazo, el sello se cerr\xF3 y las momias volvieron a dormir."
+  - imagen: {fileID: 21300000, guid: f804d2298042c8e4caa2a9bc582b8409, type: 3}
+    texto: "Al amanecer, Diego encontr\xF3 a su abuela sana y salva."
+  - imagen: {fileID: 21300000, guid: 447ac94b73aedca42aec03638cd91dee, type: 3}
+    texto: "Y el turista... aprendi\xF3 a no creer en todo lo que ve en internet.\nFIN"
+  musica: {fileID: 0}

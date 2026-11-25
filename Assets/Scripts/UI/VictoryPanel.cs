@@ -25,11 +25,15 @@ public class VictoryPanel : MonoBehaviour
 
     void Start()
     {
-        // El boton "Siguiente Nivel" esta habilitado si hay nivel siguiente para la escena actual
+        // El boton "Siguiente Nivel" siempre esta habilitado: en el ultimo nivel lleva a la historia final.
         if (siguienteNivelButton != null && GameManager.Instance != null)
         {
-            string next = GameManager.Instance.GetNextLevelSceneName();
-            siguienteNivelButton.interactable = !string.IsNullOrEmpty(next);
+            siguienteNivelButton.interactable = true;
+            if (string.IsNullOrEmpty(GameManager.Instance.GetNextLevelSceneName()))
+            {
+                var etiqueta = siguienteNivelButton.GetComponentInChildren<TMPro.TMP_Text>(true);
+                if (etiqueta != null) etiqueta.text = "CONTINUAR";
+            }
         }
     }
 
