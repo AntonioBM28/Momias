@@ -6004,6 +6004,8 @@ MonoBehaviour:
   musicNivel2: {fileID: 8300000, guid: d941dc6f3ac24af29be178c576b8ea18, type: 3}
   musicNivel3: {fileID: 8300000, guid: 1176420ada9a4eeca3c8e9951523f615, type: 3}
   musicBossPipila: {fileID: 8300000, guid: b9804f39506347beb6459f6937c7ade4, type: 3}
+  musicNivel4: {fileID: 8300000, guid: b7e66099704079e49bc9a519e793fc29, type: 3}
+  musicBossMomiaMadre: {fileID: 8300000, guid: 33706be2353b1af4b8826b1c3cb2433f, type: 3}
   musicVictoria: {fileID: 8300000, guid: bfa52ab38825496984bf0bd166ffb19d, type: 3}
   musicGameOver: {fileID: 8300000, guid: 217bd4c264b544bd962ed111185c8747, type: 3}
   sfxCampanazo: {fileID: 8300000, guid: dcfe8a43a7294640af80b8976ca2868f, type: 3}
@@ -6013,6 +6015,7 @@ MonoBehaviour:
   sfxPickupCorazon: {fileID: 0}
   sfxCampanaSagrada: {fileID: 8300000, guid: 0283a634b8e749a287db2877f5f209f6, type: 3}
   sfxUIClick: {fileID: 0}
+  sfxDanoDiego: {fileID: 0}
   musicFadeDuration: 1
 --- !u!4 &1294464771
 Transform:
@@ -6535,42 +6538,49 @@ MonoBehaviour:
     cantidad: 4
     intervaloSpawn: 1.4
     pausaAntesDeOleada: 2
+    continuarSinEsperarMuertes: 0
   - nombre: 1b - Bebe
     prefabEnemigo: {fileID: 7313754212107019590, guid: 10895c1be22342e9bc0146a8454f1ba6, type: 3}
     dataEnemigo: {fileID: 11400000, guid: ed46f25e878f4f1eb410f68ea3182f64, type: 2}
     cantidad: 1
     intervaloSpawn: 0.8
     pausaAntesDeOleada: 0.5
+    continuarSinEsperarMuertes: 0
   - nombre: 2a - Caminantes
     prefabEnemigo: {fileID: 7313754212107019590, guid: 449bce67a5f61ce4fa9e0d1d12c0effb, type: 3}
     dataEnemigo: {fileID: 11400000, guid: 181b5372d5f74634a996bf6cf155fd50, type: 2}
     cantidad: 5
     intervaloSpawn: 1.3
     pausaAntesDeOleada: 3
+    continuarSinEsperarMuertes: 0
   - nombre: 2b - Bebes
     prefabEnemigo: {fileID: 7313754212107019590, guid: 10895c1be22342e9bc0146a8454f1ba6, type: 3}
     dataEnemigo: {fileID: 11400000, guid: ed46f25e878f4f1eb410f68ea3182f64, type: 2}
     cantidad: 2
     intervaloSpawn: 0.8
     pausaAntesDeOleada: 0.5
+    continuarSinEsperarMuertes: 0
   - nombre: 3 - Mezcla+Corredora
     prefabEnemigo: {fileID: 7313754212107019590, guid: 449bce67a5f61ce4fa9e0d1d12c0effb, type: 3}
     dataEnemigo: {fileID: 11400000, guid: 181b5372d5f74634a996bf6cf155fd50, type: 2}
     cantidad: 4
     intervaloSpawn: 1.2
     pausaAntesDeOleada: 3
+    continuarSinEsperarMuertes: 0
   - nombre: 4 - Enjambre Caminantes
     prefabEnemigo: {fileID: 7313754212107019590, guid: 449bce67a5f61ce4fa9e0d1d12c0effb, type: 3}
     dataEnemigo: {fileID: 11400000, guid: 181b5372d5f74634a996bf6cf155fd50, type: 2}
     cantidad: 6
     intervaloSpawn: 0.9
     pausaAntesDeOleada: 3
+    continuarSinEsperarMuertes: 0
   - nombre: 4b - Enjambre Corredoras
     prefabEnemigo: {fileID: 1277684385933125393, guid: 772d831591a318444b5b7b053617b42c, type: 3}
     dataEnemigo: {fileID: 11400000, guid: 7f0bdc407965479479ab0fe77a93b96e, type: 2}
     cantidad: 4
     intervaloSpawn: 0.7
     pausaAntesDeOleada: 0.5
+    continuarSinEsperarMuertes: 0
   arrancarAutomatico: 1
   spriteCampanaSagrada: {fileID: 0}
   posicionCampanaSagrada: {x: 0, y: -1.3, z: 0}

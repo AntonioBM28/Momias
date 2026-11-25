@@ -20,6 +20,14 @@ public class OptionsPanel : MonoBehaviour
         if (sliderSFX != null) sliderSFX.SetValueWithoutNotify(ObtenerVolumenSFX());
     }
 
+    void OnDisable()
+    {
+        // Guardar los volumenes al cerrar el panel (no en cada movimiento del slider, para no escribir el archivo a cada rato)
+        // Sin AudioManager no hay volumen real que guardar (evita sobrescribir lo guardado con valores por defecto)
+        if (AudioManager.Instance == null) return;
+        SaveSystem.GuardarVolumenes(AudioManager.Instance.MusicVolume, AudioManager.Instance.SFXVolume);
+    }
+
     // --- Hooks de los sliders (asignados en el inspector) ---
 
     public void OnMusicaChanged(float v)

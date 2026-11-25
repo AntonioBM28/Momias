@@ -28,6 +28,9 @@ public abstract class EnemyBase : MonoBehaviour
     public bool EstaMuerto => estaMuerto;
     public int VidaActual => vidaActual;
 
+    /// <summary>Permite al WaveManager cambiar la probabilidad de soltar corazon (por nivel).</summary>
+    public void SetHeartDropChance(float probabilidad) => heartDropChance = Mathf.Clamp01(probabilidad);
+
     /// <summary>Permite al WaveManager asignar data despues de instanciar.</summary>
     public void SetData(EnemyData nuevoData)
     {

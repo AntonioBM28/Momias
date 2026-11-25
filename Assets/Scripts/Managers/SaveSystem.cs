@@ -8,8 +8,9 @@ using UnityEngine;
 public class SaveData
 {
     public int nivelMax = 1;                 // Nivel mas alto alcanzado (1-4)
-    public int nivelActualGuardado = 0;      // 0 = no hay partida en curso; 1-4 = continua en ese nivel
-    public int vidaActualGuardada = -1;      // -1 = no hay; sino vida en medios corazones
+    public int nivelActualGuardado = 0;      // 0 = no hay partida en curso; 1-4 = "Continuar" empieza ese nivel
+    public int vidaActualGuardada = -1;      // Solo informativo: al continuar Diego empieza con vida completa
+    public bool juegoCompletado = false;     // true al vencer el ultimo nivel (Momia Madre)
     public float volumenMusica = 0.6f;
     public float volumenSFX = 1.0f;
 }
@@ -65,10 +66,57 @@ public static class SaveSystem
         Debug.Log("[SaveSystem] Progreso borrado");
     }
 
+    /// <summary>
+    /// Hay partida para "Continuar" si se guardo un nivel en curso (1-4).
+    /// La vida ya no cuenta: al morir se conserva el nivel y se continua con vida completa.
+    /// </summary>
     public static bool HayPartidaGuardada()
     {
         var d = Load();
-        return d.nivelActualGuardado > 0 && d.vidaActualGuardada > 0;
+        return d.nivelActualGuardado >= 1 && d.nivelActualGuardado <= NivelFinal;
+    }
+
+    /// <summary>Numero del ultimo nivel del juego.</summary>
+    public const int NivelFinal = 4;
+
+    /// <summary>Guarda que el jugador va en este nivel (lo llama el GameManager al cargar cada nivel).</summary>
+    public static void GuardarNivelEnCurso(int nivel)
+    {
+        if (nivel < 1 || nivel > NivelFinal) return;
+        var d = Load();
+        bool cambio = d.nivelActualGuardado != nivel || nivel > d.nivelMax;
+        d.nivelActualGuardado = nivel;
+        if (nivel > d.nivelMax) d.nivelMax = nivel;
+        if (cambio) Save();
+    }
+
+    /// <summary>Al ganar un nivel: deja guardado el siguiente, o marca el juego como completado si era el ultimo.</summary>
+    public static void GuardarNivelCompletado(int nivel)
+    {
+        if (nivel < 1) return;
+        if (nivel >= NivelFinal) { MarcarJuegoCompletado(); return; }
+        GuardarNivelEnCurso(nivel + 1);
+    }
+
+    /// <summary>El jugador vencio el ultimo nivel: ya no hay partida que continuar.</summary>
+    public static void MarcarJuegoCompletado()
+    {
+        var d = Load();
+        d.juegoCompletado = true;
+        d.nivelMax = NivelFinal;
+        d.nivelActualGuardado = 0;
+        d.vidaActualGuardada = -1;
+        Save();
+    }
+
+    /// <summary>"Nueva partida": borra el avance (conserva volumenes y el nivel maximo alcanzado).</summary>
+    public static void NuevaPartida()
+    {
+        var d = Load();
+        d.nivelActualGuardado = 0;
+        d.vidaActualGuardada = -1;
+        d.juegoCompletado = false;
+        Save();
     }
 
     public static void GuardarNivelMaxSi(int nivel)

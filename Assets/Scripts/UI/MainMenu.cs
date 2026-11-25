@@ -12,6 +12,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject creditsPanel;
     [SerializeField] private GameObject optionsPanel;
 
+    [Header("Botones de partida")]
+    [Tooltip("Se muestra solo si hay una partida guardada para continuar.")]
+    [SerializeField] private GameObject btnContinuar;
+
     void Start()
     {
         MostrarPrincipal();
@@ -32,6 +36,7 @@ public class MainMenu : MonoBehaviour
         if (mainPanel != null) mainPanel.SetActive(true);
         if (creditsPanel != null) creditsPanel.SetActive(false);
         if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (btnContinuar != null) btnContinuar.SetActive(SaveSystem.HayPartidaGuardada());
     }
 
     public void MostrarCreditos()
@@ -48,6 +53,31 @@ public class MainMenu : MonoBehaviour
         if (optionsPanel != null) optionsPanel.SetActive(true);
     }
 
+    /// <summary>Boton "Continuar": empieza el nivel guardado con vida completa.</summary>
+    public void OnContinuar()
+    {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
+        if (!SaveSystem.HayPartidaGuardada()) { OnNuevaPartida(); return; }
+        string escena = SaveSystem.EscenaDeNivel(SaveSystem.Load().nivelActualGuardado);
+        Debug.Log($"[MainMenu] Continuando partida en {escena}");
+        if (SceneTransition.Instance != null)
+            SceneTransition.Instance.LoadSceneWithFade(escena);
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(escena);
+    }
+
+    /// <summary>Boton "Nueva partida": borra el avance y empieza en el Nivel 1.</summary>
+    public void OnNuevaPartida()
+    {
+        if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
+        SaveSystem.NuevaPartida();
+        if (GameManager.Instance != null)
+            GameManager.Instance.GoToFirstLevel();
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Nivel1_Museo");
+    }
+
+    /// <summary>Boton anterior "Jugar" (se conserva por compatibilidad): continua si hay partida, si no empieza una nueva.</summary>
     public void OnJugar()
     {
         if (SaveSystem.HayPartidaGuardada())
@@ -56,7 +86,7 @@ public class MainMenu : MonoBehaviour
             string escena = SaveSystem.EscenaDeNivel(save.nivelActualGuardado);
             Debug.Log($"[MainMenu] Continuando partida en {escena} con vida {save.vidaActualGuardada}");
             if (SceneTransition.Instance != null)
-                SceneTransition.Instance.CargarEscena(escena);
+                SceneTransition.Instance.LoadSceneWithFade(escena);
             else
                 UnityEngine.SceneManagement.SceneManager.LoadScene(escena);
         }
@@ -65,7 +95,6 @@ public class MainMenu : MonoBehaviour
             SaveSystem.LimpiarPartida();  // asegura arranque limpio
             GameManager.Instance.GoToFirstLevel();
         }
-    }
         else
         {
             // Fallback sin GameManager

@@ -5431,6 +5431,8 @@ MonoBehaviour:
   musicNivel2: {fileID: 8300000, guid: d941dc6f3ac24af29be178c576b8ea18, type: 3}
   musicNivel3: {fileID: 8300000, guid: 1176420ada9a4eeca3c8e9951523f615, type: 3}
   musicBossPipila: {fileID: 8300000, guid: b9804f39506347beb6459f6937c7ade4, type: 3}
+  musicNivel4: {fileID: 8300000, guid: b7e66099704079e49bc9a519e793fc29, type: 3}
+  musicBossMomiaMadre: {fileID: 8300000, guid: 33706be2353b1af4b8826b1c3cb2433f, type: 3}
   musicVictoria: {fileID: 8300000, guid: bfa52ab38825496984bf0bd166ffb19d, type: 3}
   musicGameOver: {fileID: 8300000, guid: 217bd4c264b544bd962ed111185c8747, type: 3}
   sfxCampanazo: {fileID: 8300000, guid: dcfe8a43a7294640af80b8976ca2868f, type: 3}
@@ -5440,6 +5442,7 @@ MonoBehaviour:
   sfxPickupCorazon: {fileID: 0}
   sfxCampanaSagrada: {fileID: 8300000, guid: 0283a634b8e749a287db2877f5f209f6, type: 3}
   sfxUIClick: {fileID: 0}
+  sfxDanoDiego: {fileID: 0}
   musicFadeDuration: 1
 --- !u!4 &1353934610
 Transform:

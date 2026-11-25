@@ -26,6 +26,11 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private List<Oleada> oleadas = new List<Oleada>();
     [SerializeField] private bool arrancarAutomatico = true;
 
+    [Header("Corazones (por nivel)")]
+    [Tooltip("Si esta activo, todas las momias que aparezcan en este nivel usan la probabilidad de abajo para soltar un corazon, en lugar de la de su prefab.")]
+    [SerializeField] private bool cambiarProbabilidadCorazon = false;
+    [Range(0f, 1f)] [SerializeField] private float probabilidadCorazon = 0.25f;
+
     [Header("Campana Sagrada")]
     [SerializeField] private Sprite spriteCampanaSagrada;
     [SerializeField] private Vector3 posicionCampanaSagrada = new Vector3(0f, -1.3f, 0f);
@@ -198,6 +203,9 @@ public class WaveManager : MonoBehaviour
         // Asignar data (ya no por reflexion sino con metodo publico)
         if (o.dataEnemigo != null)
             eb.SetData(o.dataEnemigo);
+
+        if (cambiarProbabilidadCorazon)
+            eb.SetHeartDropChance(probabilidadCorazon);
 
         vivos.Add(eb);
         Debug.Log($"[WaveManager] Spawn #{indice} en {spawn.name} ({spawn.position}): {instancia.name}");
