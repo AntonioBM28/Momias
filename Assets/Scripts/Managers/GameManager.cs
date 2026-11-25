@@ -79,17 +79,9 @@ public class GameManager : MonoBehaviour
         if (scene.name == menuSceneName) SetState(GameState.Menu);
         else SetState(GameState.Playing);
         ReproducirMusicaDelNivel(scene.name);
-        // Restaurar vida guardada si hay partida en curso en esta escena
+        // Guardar que el jugador va en este nivel: si muere o sale, "Continuar" lo trae aqui con vida completa
         int nivelEscena = SaveSystem.NivelDeEscena(scene.name);
-        if (nivelEscena > 0 && SaveSystem.HayPartidaGuardada())
-        {
-            var save = SaveSystem.Load();
-            if (save.nivelActualGuardado == nivelEscena && save.vidaActualGuardada > 0)
-            {
-                // Esperar 1 frame a que Diego exista
-                StartCoroutine(RestaurarVidaDiegoDeSave(save.vidaActualGuardada));
-            }
-        }
+        if (nivelEscena > 0) SaveSystem.GuardarNivelEnCurso(nivelEscena);
     }
 
     private void ReproducirMusicaDelNivel(string sceneName)
@@ -148,7 +140,16 @@ public class GameManager : MonoBehaviour
     public void TriggerVictory()
     {
         if (currentState == GameState.Victory || currentState == GameState.GameOver) return;
+        // Guardar en cuanto se gana: asi el progreso queda aunque el jugador elija "Menu" en vez de "Siguiente"
+        GuardarNivelActualCompletado();
         SetState(GameState.Victory);
+    }
+
+    /// <summary>Guarda el siguiente nivel como partida en curso, o marca el juego completado si era el ultimo.</summary>
+    private void GuardarNivelActualCompletado()
+    {
+        int nivelActual = SaveSystem.NivelDeEscena(SceneManager.GetActiveScene().name);
+        if (nivelActual > 0) SaveSystem.GuardarNivelCompletado(nivelActual);
     }
 
     // --- Navegacion de alto nivel ---
@@ -186,22 +187,8 @@ public class GameManager : MonoBehaviour
 
     public void GoToNextLevel()
     {
-        // Guardar progreso: el nivel actual quedo completado, el siguiente queda desbloqueado
-        string sceneActual = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
-        int nivelActual = SaveSystem.NivelDeEscena(sceneActual);
-        if (nivelActual > 0)
-        {
-            SaveSystem.GuardarNivelMaxSi(nivelActual + 1);
-            // Guardar la partida apuntando al nuevo nivel con vida full
-            var diego = GameObject.FindGameObjectWithTag("Player");
-            int vidaActual = 12;  // default full
-            if (diego != null)
-            {
-                var ph = diego.GetComponent<PlayerHealth>();
-                if (ph != null) vidaActual = ph.VidaActual;
-            }
-            SaveSystem.GuardarPartida(nivelActual + 1, vidaActual);
-        }
+        // Guardar progreso: el nivel actual quedo completado (ya se guarda en TriggerVictory; repetirlo es inofensivo)
+        GuardarNivelActualCompletado();
 
         string next = GetNextLevelSceneName();
         if (string.IsNullOrEmpty(next))
@@ -244,27 +231,6 @@ public class GameManager : MonoBehaviour
         currentState = nuevo;
         Debug.Log($"[GameManager] Estado -> {nuevo}");
         OnStateChanged?.Invoke(nuevo);
-    }
-
-    private System.Collections.IEnumerator RestaurarVidaDiegoDeSave(int vidaGuardada)
-    {
-        yield return null;  // esperar 1 frame
-        var diego = GameObject.FindGameObjectWithTag("Player");
-        if (diego != null)
-        {
-            var ph = diego.GetComponent<PlayerHealth>();
-            if (ph != null)
-            {
-                int delta = vidaGuardada - ph.VidaActual;
-                if (delta < 0) ph.Curar(delta);  // bajar (Curar con negativo baja)... hmm no, mejor directo:
-                // Usar reflection o modificar vidaActual directo. Mas simple: aplicar damage ficticio.
-                while (ph.VidaActual > vidaGuardada && !ph.EstaMuerto)
-                    ph.RecibirDanio(1, diego.transform.position);
-                while (ph.VidaActual < vidaGuardada)
-                    ph.Curar(1);
-                Debug.Log($"[GameManager] Vida restaurada a {vidaGuardada}");
-            }
-        }
     }
 
 }
