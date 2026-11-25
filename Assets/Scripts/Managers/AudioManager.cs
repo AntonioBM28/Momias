@@ -48,8 +48,8 @@ public class AudioManager : MonoBehaviour
     {
         // Cargar volumenes persistidos
         var save = SaveSystem.Load();
-        MusicVolume = save.volumenMusica;
-        SFXVolume = save.volumenSFX;
+        musicVolume = Mathf.Clamp01(save.volumenMusica);
+        sfxVolume = Mathf.Clamp01(save.volumenSFX);
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
