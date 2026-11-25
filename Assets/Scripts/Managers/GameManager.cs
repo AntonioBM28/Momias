@@ -190,18 +190,16 @@ public class GameManager : MonoBehaviour
         // Guardar progreso: el nivel actual quedo completado (ya se guarda en TriggerVictory; repetirlo es inofensivo)
         GuardarNivelActualCompletado();
 
+        int nivelActual = SaveSystem.NivelDeEscena(SceneManager.GetActiveScene().name);
         string next = GetNextLevelSceneName();
         if (string.IsNullOrEmpty(next))
         {
-            Debug.LogWarning("[GameManager] No hay nivel siguiente, voy al menu.");
-            GoToMenu();
+            // Ultimo nivel: historia final y luego el menu
+            Historia.Reproducir(Historia.Final, menuSceneName);
             return;
         }
-        Time.timeScale = 1f;
-        if (SceneTransition.Instance != null)
-            SceneTransition.Instance.LoadSceneWithFade(next);
-        else
-            SceneManager.LoadScene(next);
+        // Interludio de la historia (si existe) y luego el siguiente nivel
+        Historia.Reproducir(Historia.Interludio(nivelActual), next);
     }
 
     public void RestartCurrentLevel()

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4cf3e08eef503042b5b5795846b8b4b, type: 3}
+  m_Name: Intro
+  m_EditorClassIdentifier: Assembly-CSharp::HistoriaData
+  diapositivas:
+  - imagen: {fileID: 21300000, guid: dba37b5e87f652741a7536e125bb4c45, type: 3}
+    texto: 15 de septiembre, casi medianoche. Diego cubre el turno nocturno en el Museo de las Momias.
+  - imagen: {fileID: 21300000, guid: 2643d04647384de4fb2af28fea8526ed, type: 3}
+    texto: "Un turista, siguiendo un video viral, toc\xF3 la r\xE9plica de la Campana de Dolores... al rev\xE9s."
+  - imagen: {fileID: 21300000, guid: c9d04657a13286d4cb3fda20abf2761b, type: 3}
+    texto: "El sonido rompi\xF3 un sello antiguo. Las momias despertaron."
+  - imagen: {fileID: 21300000, guid: 00478304f84f03b45831a3c45c7fda54, type: 3}
+    texto: "Esa misma noche, las momias se llevaron a Do\xF1a Eulalia, la bisabuela de Diego."
+  - imagen: {fileID: 21300000, guid: 94266b479ba634b468cb7988065e0be9, type: 3}
+    texto: "Diego tom\xF3 la campanita ceremonial de su abuela. Solo las 4 Campanas Sagradas pueden cerrar el sello... y traerla de vuelta."
+  musica: {fileID: 0}

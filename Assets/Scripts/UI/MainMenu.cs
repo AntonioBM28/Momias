@@ -71,10 +71,9 @@ public class MainMenu : MonoBehaviour
     {
         if (AudioManager.Instance != null) AudioManager.Instance.PlayUIClick();
         SaveSystem.NuevaPartida();
-        if (GameManager.Instance != null)
-            GameManager.Instance.GoToFirstLevel();
-        else
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Nivel1_Museo");
+        // Intro de la historia y luego el primer nivel
+        string primerNivel = GameManager.Instance != null ? GameManager.Instance.FirstLevelSceneName : "Nivel1_Museo";
+        Historia.Reproducir(Historia.Intro, primerNivel);
     }
 
     /// <summary>Boton anterior "Jugar" (se conserva por compatibilidad): continua si hay partida, si no empieza una nueva.</summary>
