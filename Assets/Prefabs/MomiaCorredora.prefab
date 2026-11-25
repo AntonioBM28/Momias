@@ -208,7 +208,7 @@ MonoBehaviour:
   duracionFlash: 0.1
   vidaActual: 0
   heartPickupPrefab: {fileID: 6222275962859468466, guid: 192fca4bed5608b47abd0b1daecda0ca, type: 3}
-  heartDropChance: 0.2
+  heartDropChance: 0.12
   distanciaAtaque: 1
   distanciaDanio: 1.3
   duracionAtaque: 0.7

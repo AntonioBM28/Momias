@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyData
   nombre: Momia Caminante
   vidaMaxima: 2
-  velocidad: 1.5
+  velocidad: 4.5
   danio: 1
   tinte: {r: 1, g: 1, b: 1, a: 1}
   escala: 1

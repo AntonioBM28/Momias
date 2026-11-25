@@ -63,7 +63,9 @@ public class HeartPickup : MonoBehaviour
         if (prefab == null) return;
         if (Random.value < probabilidad)
         {
-            Instantiate(prefab, posicion, Quaternion.identity);
+            // Spawn ligeramente arriba para que no quede bajo el suelo
+            Vector3 spawnPos = posicion + new Vector3(0f, 0.5f, 0f);
+            Instantiate(prefab, spawnPos, Quaternion.identity);
         }
     }
 }

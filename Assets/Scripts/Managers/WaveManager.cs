@@ -94,7 +94,8 @@ public class WaveManager : MonoBehaviour
     {
         if (spriteCampanaSagrada == null)
         {
-            Debug.LogError("[WaveManager] Asigna el sprite de la Campana Sagrada en el Inspector.");
+            // Null = este nivel NO spawnea Campana automatica (el boss se encarga).
+            Debug.Log("[WaveManager] spriteCampanaSagrada null: no se spawnea automatica (boss-driven).");
             return;
         }
 

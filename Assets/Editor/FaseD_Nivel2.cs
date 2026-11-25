@@ -33,7 +33,7 @@ public static class FaseD_Nivel2
     private const string PATH_SO_BEBE = "Assets/ScriptableObjects/Enemies/MomiaBebe.asset";
     private const string PATH_SO_CORREDORA = "Assets/ScriptableObjects/Enemies/MomiaCorredora.asset";
     private const string PATH_SO_PIPILA = "Assets/ScriptableObjects/Enemies/MomiaPipila.asset";
-    private const string PATH_BELL_SPRITE = "Assets/Sprites/UI/CampanaSagrada.png";
+    private const string PATH_BELL_SPRITE = "Assets/Sprites/Items/CampanaSagrada.png";
 
     // Colores consistentes con Fase B
     private static readonly Color DORADO = new Color(1f, 0.78f, 0.28f, 1f);
@@ -82,6 +82,52 @@ public static class FaseD_Nivel2
             "OK");
     }
 
+    [MenuItem(MENU + "🔧 FIX BOSS PIPILA (A+B+C: camara/escala/barra)", priority = 3)]
+    public static void FixBossPipilaAll()
+    {
+        if (!EditorUtility.DisplayDialog("Fix Boss Pipila",
+            "Aplica los 3 fixes del Nivel 2:\n\n" +
+            "  A) Pipila se salia de camara -> vel bajada a 5, clamp cada FixedUpdate\n" +
+            "  B) Pipila chica -> escala 2.3 (reimporta SO + recrea boss en escena)\n" +
+            "  C) Barra no bajaba -> reasigna data al prefab, mueve suscripcion a AparicionBoss, agrega logs\n\n" +
+            "Despues de esto: abre Nivel2_Alhondiga, play, pegale al boss y mira la consola.\n" +
+            "Deberian salir logs [BossPipila] [BossBridge] [BossHealthBar].\n\n" +
+            "¿Continuar?", "Si, aplicar", "Cancelar"))
+            return;
+
+        // 1. Reimportar SO (para que Unity vea escala 2.3)
+        AssetDatabase.ImportAsset(PATH_SO_PIPILA, ImportAssetOptions.ForceUpdate);
+        Debug.Log("[FixPipila] SO reimportado");
+
+        // 2. Re-fix prefab (reasigna data + collider nuevo)
+        FixBossPipilaPrefab();
+        Debug.Log("[FixPipila] Prefab reparado");
+
+        // 3. Abrir escena Nivel 2 y recrear boss+bar+bridge con la nueva escala/limites
+        OpenScene();
+        SpawnBossYHealthBar();
+
+        // 4. Guardar escena
+        Scene s = EditorSceneManager.GetActiveScene();
+        EditorSceneManager.MarkSceneDirty(s);
+        EditorSceneManager.SaveScene(s);
+
+        EditorUtility.DisplayDialog("Fix Boss Pipila",
+            "✅ Fixes aplicados.\n\n" +
+            "Como probar:\n" +
+            "  1. Dale PLAY (escena Nivel2_Alhondiga ya abierta).\n" +
+            "  2. Elimina las oleadas rapido (o salta directo si tienes atajo) hasta que aparezca Pipila.\n" +
+            "  3. Pipila debe verse MUCHO mas grande (escala 2.3x).\n" +
+            "  4. Pegale con J. En consola debes ver:\n" +
+            "       [BossPipila] RecibirDanio -> HP: 14/15\n" +
+            "       [BossBridge] OnHPChanged recibido -> 14/15\n" +
+            "       [BossHealthBar] SetVida -> 14/15 fill=0.93 barraVida=OK\n" +
+            "  5. La barra DEBE bajar visualmente.\n" +
+            "  6. Durante embestidas, Pipila NO debe pasarse de los limites de camara (+-3.5 world).\n\n" +
+            "Si algo falla pegame el log.",
+            "OK");
+    }
+
     [MenuItem(MENU + "N2.1 Open scene", priority = 40)]
     public static void OpenScene()
     {
@@ -91,6 +137,42 @@ public static class FaseD_Nivel2
             if (current.isDirty) EditorSceneManager.SaveScene(current);
             EditorSceneManager.OpenScene(PATH_SCENE_N2);
         }
+    }
+
+    [MenuItem(MENU + "N2.0 Apagar gizmos de Collider2D (quita lineas verdes)", priority = 39)]
+    public static void ApagarGizmosColliders()
+    {
+        // Usa GizmoUtility para apagar la visualizacion de Colliders 2D en Scene+Game.
+        // NO borra nada, solo oculta las lineas verdes. Reversible desde Edit > Preferences > Gizmos.
+        System.Type[] tiposCollider = {
+            typeof(BoxCollider2D),
+            typeof(CircleCollider2D),
+            typeof(CapsuleCollider2D),
+            typeof(PolygonCollider2D),
+            typeof(EdgeCollider2D),
+            typeof(CompositeCollider2D),
+        };
+        int apagados = 0;
+        foreach (var t in tiposCollider)
+        {
+            try
+            {
+                // Unity 6 API: solo Type + bool (sin GizmoType enum)
+                GizmoUtility.SetGizmoEnabled(t, false, true);
+                GizmoUtility.SetIconEnabled(t, false);
+                apagados++;
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[N2] No pude apagar gizmo de {t.Name}: {e.Message}");
+            }
+        }
+        Debug.Log($"[N2] ✅ Gizmos de {apagados} tipos de Collider2D apagados.");
+        EditorUtility.DisplayDialog("Momias",
+            "✅ Listo!\n\nLas lineas verdes de los colliders ya no se muestran en Scene y Game views.\n\n" +
+            "Los colliders siguen funcionando normal (es solo visualizacion).\n" +
+            "Para revertir: Edit > Preferences > Gizmos.",
+            "OK");
     }
 
     [MenuItem(MENU + "N2.2 Camara estatica (como Nivel 1)", priority = 41)]
@@ -363,7 +445,7 @@ public static class FaseD_Nivel2
         UnityEventTools.AddPersistentListener(btnMenu.onClick, pm.OnMenu);
         UnityEventTools.AddPersistentListener(btnSalir.onClick, pm.OnSalir);
 
-        // Panel Opciones (minimo: solo sliders + volver)
+        // Panel Opciones con sliders funcionales
         GameObject optPanel = new GameObject("OptionsPanel", typeof(RectTransform), typeof(OptionsPanel));
         optPanel.transform.SetParent(pausePanel.transform, false);
         var opRt = optPanel.GetComponent<RectTransform>();
@@ -371,9 +453,45 @@ public static class FaseD_Nivel2
         opRt.offsetMin = Vector2.zero; opRt.offsetMax = Vector2.zero;
         OptionsPanel op = optPanel.GetComponent<OptionsPanel>();
 
+        // Titulo OPCIONES
+        var tituloOpc = new GameObject("TituloOpc", typeof(RectTransform));
+        tituloOpc.transform.SetParent(optPanel.transform, false);
+        var tmpOpc = tituloOpc.AddComponent<TextMeshProUGUI>();
+        tmpOpc.text = "OPCIONES"; tmpOpc.fontSize = 90; tmpOpc.fontStyle = FontStyles.Bold;
+        tmpOpc.color = DORADO; tmpOpc.alignment = TextAlignmentOptions.Center;
+        var tOcRt = tmpOpc.rectTransform;
+        tOcRt.anchorMin = new Vector2(0.5f, 0.5f); tOcRt.anchorMax = new Vector2(0.5f, 0.5f);
+        tOcRt.pivot = new Vector2(0.5f, 0.5f);
+        tOcRt.anchoredPosition = new Vector2(0, 220); tOcRt.sizeDelta = new Vector2(800, 120);
+
+        // Sliders volumen (reuso del helper de FaseB_Setup)
+        Slider sliderMusica = FaseB_Setup.BuildVolumeSliderPublic(optPanel.transform, "Musica", 0, 80, 0.6f);
+        Slider sliderSFX = FaseB_Setup.BuildVolumeSliderPublic(optPanel.transform, "Efectos (SFX)", 0, 0, 1.0f);
+
+        // Placeholder
+        var ph = new GameObject("Placeholder", typeof(RectTransform));
+        ph.transform.SetParent(optPanel.transform, false);
+        var phTmp = ph.AddComponent<TextMeshProUGUI>();
+        phTmp.text = "Mas opciones proximamente en Avance 4";
+        phTmp.fontSize = 28; phTmp.fontStyle = FontStyles.Italic;
+        phTmp.color = new Color(1, 1, 1, 0.7f);
+        phTmp.alignment = TextAlignmentOptions.Center;
+        var phRt = phTmp.rectTransform;
+        phRt.anchorMin = new Vector2(0.5f, 0.5f); phRt.anchorMax = new Vector2(0.5f, 0.5f);
+        phRt.pivot = new Vector2(0.5f, 0.5f);
+        phRt.anchoredPosition = new Vector2(0, -80); phRt.sizeDelta = new Vector2(1200, 60);
+
         // Boton volver del panel opciones
-        var btnBack = CrearBotonMenu(optPanel.transform, "BtnVolver", "VOLVER", 0, -300);
+        var btnBack = CrearBotonMenu(optPanel.transform, "BtnVolver", "VOLVER", 0, -220);
         UnityEventTools.AddPersistentListener(btnBack.onClick, pm.MostrarPrincipal);
+
+        // Wire sliders al OptionsPanel
+        UnityEventTools.AddPersistentListener<float>(sliderMusica.onValueChanged, op.OnMusicaChanged);
+        UnityEventTools.AddPersistentListener<float>(sliderSFX.onValueChanged, op.OnSFXChanged);
+        var opSo = new SerializedObject(op);
+        opSo.FindProperty("sliderMusica").objectReferenceValue = sliderMusica;
+        opSo.FindProperty("sliderSFX").objectReferenceValue = sliderSFX;
+        opSo.ApplyModifiedProperties();
 
         // Wire pause
         var so = new SerializedObject(pm);
@@ -521,30 +639,36 @@ public static class FaseD_Nivel2
 
         BossHealthBar bar = BuildBossHealthBar(canvas.transform);
 
-        // Hook de HP se hace en runtime via BossBridge.OnHPChanged -> bar.SetVida
-
-        // Al morir el boss, spawn SacredBell y ocultar barra
-        BossBridge bridge = boss.AddComponent<BossBridge>();
+        // BossBridge en GameObject SEPARADO (siempre activo), NO dentro del Boss disabled.
+        // Si estuviera en el Boss disabled, los UnityEvents no podrian invocar sus metodos.
+        GameObject existingBridge = GameObject.Find("BossBridge");
+        if (existingBridge != null) Object.DestroyImmediate(existingBridge);
+        GameObject bridgeGo = new GameObject("BossBridge");
+        BossBridge bridge = bridgeGo.AddComponent<BossBridge>();
         bridge.boss = bp;
         bridge.bar = bar;
         bridge.bellSprite = AssetDatabase.LoadAssetAtPath<Sprite>(PATH_BELL_SPRITE);
+        if (bridge.bellSprite == null)
+            Debug.LogWarning($"[N2] Sprite de Campana no encontrado en {PATH_BELL_SPRITE}");
 
-        // Hook del WaveManager: cuando se completan todas las oleadas → bridge.OnAllWavesCompleted
+        // Hook del WaveManager: cuando se completan todas las oleadas → bridge.AparicionBoss
         WaveManager wm = Object.FindFirstObjectByType<WaveManager>();
         if (wm != null)
         {
-            // Limpiar listeners previos (por si rebuild)
             UnityEventTools.RemovePersistentListener(wm.OnAllWavesCompleted, bridge.AparicionBoss);
             UnityEventTools.AddPersistentListener(wm.OnAllWavesCompleted, bridge.AparicionBoss);
-            // Tambien eliminamos el spawn automatico de CampanaSagrada del WaveManager
-            // dejando el sprite null (hace early-return con warning, no revienta)
+
+            // CRITICO: el WaveManager por default spawnea su propia Campana al terminar.
+            // En Nivel 2 NO queremos eso — bridge se encarga despues de matar al boss.
+            // Dejar el sprite null hace que SpawnCampanaSagrada haga early-return con error.
+            // Mejor: quitamos el sprite para que no intente ni spawnear.
             SerializedObject wmSo = new SerializedObject(wm);
-            // No tocamos spriteCampanaSagrada aqui porque bridge se encarga del spawn al morir boss
+            wmSo.FindProperty("spriteCampanaSagrada").objectReferenceValue = null;
             wmSo.ApplyModifiedProperties();
         }
 
         bar.gameObject.SetActive(false);
-        Debug.Log("[N2] ✅ Boss Pipila + BossHealthBar + Bridge listos");
+        Debug.Log("[N2] ✅ Boss Pipila + BossHealthBar + Bridge (GO separado) listos");
     }
 
     private static void FixBossPipilaPrefab()
@@ -552,18 +676,21 @@ public static class FaseD_Nivel2
         GameObject root = PrefabUtility.LoadPrefabContents(PATH_PREFAB_PIPILA);
         try
         {
-            if (root.GetComponent<BossPipila>() == null)
+            // Asegurar BossPipila component
+            BossPipila bp = root.GetComponent<BossPipila>();
+            if (bp == null) bp = root.AddComponent<BossPipila>();
+
+            // SIEMPRE reasignar data (fix bug: antes se saltaba si el script ya existia)
+            EnemyData d = AssetDatabase.LoadAssetAtPath<EnemyData>(PATH_SO_PIPILA);
+            if (d != null)
             {
-                BossPipila bp = root.AddComponent<BossPipila>();
-                // Asignar SO
-                EnemyData d = AssetDatabase.LoadAssetAtPath<EnemyData>(PATH_SO_PIPILA);
-                if (d != null)
-                {
-                    SerializedObject so = new SerializedObject(bp);
-                    so.FindProperty("data").objectReferenceValue = d;
-                    so.ApplyModifiedProperties();
-                }
+                SerializedObject so = new SerializedObject(bp);
+                so.FindProperty("data").objectReferenceValue = d;
+                so.ApplyModifiedProperties();
+                Debug.Log($"[N2] FixBossPipila: data reasignado -> {d.name} (vida={d.vidaMaxima} escala={d.escala})");
             }
+            else Debug.LogError($"[N2] FixBossPipila: no se encontro SO en {PATH_SO_PIPILA}");
+
             // Asegurar Rigidbody2D
             Rigidbody2D rb = root.GetComponent<Rigidbody2D>();
             if (rb == null)
@@ -572,12 +699,12 @@ public static class FaseD_Nivel2
                 rb.gravityScale = 3f;
                 rb.constraints = RigidbodyConstraints2D.FreezeRotation;
             }
-            // Asegurar Collider2D
-            if (root.GetComponent<Collider2D>() == null)
-            {
-                BoxCollider2D col = root.AddComponent<BoxCollider2D>();
-                col.size = new Vector2(1.2f, 2.5f);
-            }
+            // Collider2D: siempre ajustar a tamano local 1.0x2.2 (con escala 2.3 world = 2.3x5.06)
+            BoxCollider2D col = root.GetComponent<BoxCollider2D>();
+            if (col == null) col = root.AddComponent<BoxCollider2D>();
+            col.size = new Vector2(1.0f, 2.2f);
+            col.offset = new Vector2(0f, 0f);
+
             PrefabUtility.SaveAsPrefabAsset(root, PATH_PREFAB_PIPILA);
         }
         finally { PrefabUtility.UnloadPrefabContents(root); }
@@ -703,9 +830,34 @@ public static class FaseD_Nivel2
         rt.pivot = new Vector2(0, 1);
         rt.anchoredPosition = new Vector2(30, -30);
         rt.sizeDelta = new Vector2(400, 60);
-        go.AddComponent<HeartsHUD>();
-        // Nota: el componente HeartsHUD requiere referencias que ya maneja via OnEnable/Start
-        Debug.Log("[N2] HeartsHUD creado (asegura que su configuracion de sprites este OK)");
+        HeartsHUD hud = go.AddComponent<HeartsHUD>();
+
+        // Asignar los 3 sprites desde CorazonesHUD.png (sliced como Multiple)
+        string path = "Assets/Sprites/UI/CorazonesHUD.png";
+        Object[] subassets = AssetDatabase.LoadAllAssetsAtPath(path);
+        Sprite lleno = null, medio = null, vacio = null;
+        foreach (Object obj in subassets)
+        {
+            if (obj is Sprite sp)
+            {
+                if (sp.name.Contains("Lleno")) lleno = sp;
+                else if (sp.name.Contains("Medio")) medio = sp;
+                else if (sp.name.Contains("Vacio")) vacio = sp;
+            }
+        }
+        if (lleno != null && medio != null && vacio != null)
+        {
+            SerializedObject so = new SerializedObject(hud);
+            so.FindProperty("corazonLleno").objectReferenceValue = lleno;
+            so.FindProperty("corazonMedio").objectReferenceValue = medio;
+            so.FindProperty("corazonVacio").objectReferenceValue = vacio;
+            so.ApplyModifiedProperties();
+            Debug.Log("[N2] ✅ HeartsHUD creado con 3 sprites de corazones asignados");
+        }
+        else
+        {
+            Debug.LogWarning($"[N2] No encontre los 3 sprites de corazon en {path} (Lleno/Medio/Vacio)");
+        }
     }
 
     private static void RebuildPauseMenuN2()
@@ -741,40 +893,47 @@ public class BossBridge : MonoBehaviour
     public Sprite bellSprite;
 
     private bool bossActivado;
-
-    void Start()
-    {
-        if (boss != null)
-        {
-            boss.OnBossDied.AddListener(OnBossMurio);
-            boss.OnBossHealthChanged.AddListener(OnHPChanged);
-        }
-    }
+    private bool suscrito;
 
     public void AparicionBoss()
     {
         if (bossActivado || boss == null) return;
         bossActivado = true;
 
+        // 1. Activar boss (dispara su Awake)
         boss.gameObject.SetActive(true);
-        // Inicializar barra con vida max del SO
+
+        // 2. Suscribir eventos DESPUES de activar (fix bug: antes se suscribia en Start del Bridge
+        //    cuando el Boss estaba disabled, orden de ejecucion fragil)
+        if (!suscrito)
+        {
+            boss.OnBossDied.AddListener(OnBossMurio);
+            boss.OnBossHealthChanged.AddListener(OnHPChanged);
+            suscrito = true;
+            Debug.Log("[BossBridge] Eventos suscritos al boss");
+        }
+
+        // 3. Inicializar barra con vida max del SO
         int vidaMax = boss.Data != null ? boss.Data.vidaMaxima : 15;
         if (bar != null)
         {
             bar.Inicializar("MOMIA-PIPILA", vidaMax);
             bar.MostrarConFade();
+            // Forzar SetVida al valor actual del boss (puede que Start ya haya corrido o no)
+            bar.SetVida(boss.VidaActual > 0 ? boss.VidaActual : vidaMax);
         }
 
-        // Crossfade a musica de boss
+        // 4. Crossfade a musica de boss
         if (AudioManager.Instance != null && AudioManager.Instance.musicBossPipila != null)
             AudioManager.Instance.PlayMusic(AudioManager.Instance.musicBossPipila, true);
 
         if (CameraShaker.Instance != null) CameraShaker.Instance.Shake(0.3f, 0.5f);
-        Debug.Log("[BossBridge] ⚔️ Boss aparecio, musica cambiada");
+        Debug.Log($"[BossBridge] ⚔️ Boss aparecio, vidaMax={vidaMax}, bar={(bar!=null?"OK":"NULL")}");
     }
 
     private void OnHPChanged(int actual, int max)
     {
+        Debug.Log($"[BossBridge] OnHPChanged recibido -> {actual}/{max}");  // TMP debug
         if (bar != null) bar.SetVida(actual);
     }
 

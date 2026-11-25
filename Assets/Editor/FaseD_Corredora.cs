@@ -201,7 +201,7 @@ public static class FaseD_Corredora
         SerializedObject so = new SerializedObject(data);
         so.FindProperty("nombre").stringValue = "Momia Corredora";
         so.FindProperty("vidaMaxima").intValue = 2;
-        so.FindProperty("velocidad").floatValue = 3.5f;
+        so.FindProperty("velocidad").floatValue = 4.5f;
         so.FindProperty("danio").floatValue = 2f;
         so.FindProperty("escala").floatValue = 1.3f;
         so.FindProperty("tinte").colorValue = Color.white;
@@ -248,7 +248,7 @@ public static class FaseD_Corredora
         if (heart != null)
         {
             so.FindProperty("heartPickupPrefab").objectReferenceValue = heart;
-            so.FindProperty("heartDropChance").floatValue = 0.20f;
+            so.FindProperty("heartDropChance").floatValue = 0.12f;
         }
         so.ApplyModifiedProperties();
 

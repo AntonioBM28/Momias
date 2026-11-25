@@ -21,14 +21,22 @@ public class HeartsHUD : MonoBehaviour
 
     private void Awake()
     {
-        salud = GetComponent<PlayerHealth>();
+        BuscarSalud();
         CrearHUD();
     }
 
     private void OnEnable()
     {
-        if (salud == null) salud = GetComponent<PlayerHealth>();
+        if (salud == null) BuscarSalud();
         if (salud != null) salud.OnHealthChanged.AddListener(ActualizarCorazones);
+    }
+
+    private void BuscarSalud()
+    {
+        salud = GetComponent<PlayerHealth>();
+        if (salud != null) return;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null) salud = player.GetComponent<PlayerHealth>();
     }
 
     private void Start()

@@ -92,9 +92,15 @@ public class BossHealthBar : MonoBehaviour
 
     public void SetVida(int vidaActual)
     {
+        if (vidaMaxima <= 0)
+        {
+            Debug.LogWarning("[BossHealthBar] vidaMaxima <= 0, usando 15 como fallback");
+            vidaMaxima = 15;
+        }
         float v = Mathf.Clamp01(vidaActual / (float)vidaMaxima);
         fillActual = v;
         if (barraVida != null) barraVida.fillAmount = fillActual;
+        Debug.Log($"[BossHealthBar] SetVida -> {vidaActual}/{vidaMaxima} fill={fillActual:F2} barraVida={(barraVida!=null?"OK":"NULL")}");  // TMP debug
     }
 
     void Update()

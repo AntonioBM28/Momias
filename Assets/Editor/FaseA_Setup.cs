@@ -337,7 +337,7 @@ public static class FaseA_Setup
             if (eb == null) { Debug.LogWarning($"[FaseA] {prefabPath} no tiene EnemyBase"); return; }
             var so = new SerializedObject(eb);
             so.FindProperty("heartPickupPrefab").objectReferenceValue = heartPrefab;
-            so.FindProperty("heartDropChance").floatValue = 0.20f;
+            so.FindProperty("heartDropChance").floatValue = 0.12f;
             so.ApplyModifiedProperties();
             PrefabUtility.SaveAsPrefabAsset(root, prefabPath);
         }

@@ -27,6 +27,14 @@ public class AttackHitbox : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        // Destruir proyectiles enemigos (Escupidora)
+        EnemyProjectile proj = other.GetComponent<EnemyProjectile>();
+        if (proj != null)
+        {
+            proj.DestruirPorCampanazo();
+            return;
+        }
+
         EnemyBase enemigo = other.GetComponent<EnemyBase>();
         if (enemigo == null) enemigo = other.GetComponentInParent<EnemyBase>();
         if (enemigo == null || yaDanio.Contains(enemigo)) return;

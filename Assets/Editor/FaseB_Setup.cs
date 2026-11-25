@@ -416,6 +416,8 @@ public static class FaseB_Setup
         return go;
     }
 
+    public static Slider BuildVolumeSliderPublic(Transform parent, string label, float x, float y, float valorInicial) => BuildVolumeSlider(parent, label, x, y, valorInicial);
+
     private static Slider BuildVolumeSlider(Transform parent, string label, float x, float y, float valorInicial)
     {
         // Contenedor

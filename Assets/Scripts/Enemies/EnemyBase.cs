@@ -16,7 +16,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     [Header("Drops")]
     [SerializeField] protected GameObject heartPickupPrefab;
-    [Range(0f, 1f)] [SerializeField] protected float heartDropChance = 0.20f;
+    [Range(0f, 1f)] [SerializeField] protected float heartDropChance = 0.12f;
 
     protected Rigidbody2D rb;
     protected SpriteRenderer sr;
@@ -26,6 +26,7 @@ public abstract class EnemyBase : MonoBehaviour
 
     public EnemyData Data => data;
     public bool EstaMuerto => estaMuerto;
+    public int VidaActual => vidaActual;
 
     /// <summary>Permite al WaveManager asignar data despues de instanciar.</summary>
     public void SetData(EnemyData nuevoData)

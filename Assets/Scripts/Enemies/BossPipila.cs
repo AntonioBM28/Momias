@@ -18,7 +18,7 @@ public class BossPipila : EnemyBase
     public enum FaseBoss { Fase1, Fase2 }
 
     [Header("Fase 1 - Embestidas")]
-    [SerializeField] private float velocidadEmbestida = 7f;
+    [SerializeField] private float velocidadEmbestida = 5f;
     [SerializeField] private float pausaEntreEmbestidas = 1.5f;
     [SerializeField] private float danioEmbestida = 3f;
 
@@ -32,8 +32,8 @@ public class BossPipila : EnemyBase
     [SerializeField] private Color colorOnda = new Color(0.6f, 0.4f, 0.2f, 0.9f);
 
     [Header("Limites de arena")]
-    [SerializeField] private float limiteIzquierdo = -5f;
-    [SerializeField] private float limiteDerecho = 5f;
+    [SerializeField] private float limiteIzquierdo = -3.5f;
+    [SerializeField] private float limiteDerecho = 3.5f;
 
     [Header("Eventos")]
     public UnityEvent<int, int> OnBossHealthChanged;
@@ -61,7 +61,9 @@ public class BossPipila : EnemyBase
     {
         if (estaMuerto) return;
         base.RecibirDanio(cantidad, origen);
-        OnBossHealthChanged?.Invoke(vidaActual, data != null ? data.vidaMaxima : 15);
+        int maxVida = data != null ? data.vidaMaxima : 15;
+        Debug.Log($"[BossPipila] RecibirDanio -> HP: {vidaActual}/{maxVida}");  // TMP debug
+        OnBossHealthChanged?.Invoke(vidaActual, maxVida);
 
         // Chequeo de transicion a Fase 2 al llegar a 50%
         float porcentaje = vidaActual / (float)(data != null ? data.vidaMaxima : 15);
@@ -114,12 +116,20 @@ public class BossPipila : EnemyBase
         if (anim != null) anim.SetBool("Caminando", false);
         yield return new WaitForSeconds(0.6f);
 
-        // Embiste
+        // Embiste con clamp duro cada FixedUpdate sobre rb.position
         if (anim != null) anim.SetBool("Caminando", true);
         float destino = dirX > 0 ? limiteDerecho : limiteIzquierdo;
-        while (!estaMuerto && Mathf.Abs(transform.position.x - destino) > 0.3f)
+        while (!estaMuerto && Mathf.Abs(rb.position.x - destino) > 0.2f)
         {
+            // Si ya llego al limite en la direccion de avance, cortar
+            if (rb.position.x <= limiteIzquierdo && dirX < 0) break;
+            if (rb.position.x >= limiteDerecho && dirX > 0) break;
+
+            // Set velocity + clamp posicion duro cada tick de fisica
             rb.linearVelocity = new Vector2(dirX * velocidadEmbestida, rb.linearVelocity.y);
+            Vector2 clamped = rb.position;
+            clamped.x = Mathf.Clamp(clamped.x, limiteIzquierdo, limiteDerecho);
+            rb.position = clamped;
 
             // Si colisiona con Diego en el camino
             if (playerTransform != null)
@@ -128,8 +138,12 @@ public class BossPipila : EnemyBase
                 float dy = Mathf.Abs(playerTransform.position.y - transform.position.y);
                 if (dx < 0.7f && dy < 1.0f) HacerDanioAPlayer(danioEmbestida);
             }
-            yield return null;
+            yield return new WaitForFixedUpdate();
         }
+        // Hard clamp final + freno
+        Vector2 finalPos = rb.position;
+        finalPos.x = Mathf.Clamp(finalPos.x, limiteIzquierdo, limiteDerecho);
+        rb.position = finalPos;
         rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         yield return new WaitForSeconds(pausaEntreEmbestidas);
     }
